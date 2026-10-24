@@ -944,29 +944,26 @@
     box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
   }
- /* 找到这里的 .end-photo img */
   .end-photo img { 
     width: 100%; 
-    aspect-ratio: 1 / 1; /* 新增：强制照片本身为正方形，彻底解决被压扁的问题 */
+    aspect-ratio: 1 / 1; /* 强制照片本身为正方形 */
     object-fit: cover; 
     filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); 
   }
+  .end-photo figcaption {
+    position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
+    font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
+  }
   
-  /* 找到下面这三个尺寸定义 */
   .end-photo--main {
     width: 50%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3;
-    /* 删除了原本的 height: 80% */
   }
   .end-photo--main img { object-position: 50% 40%; }
-  
   .end-photo--top {
     width: 34%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2;
-    /* 删除了原本的 height: 47% */
   }
-  
   .end-photo--bottom {
     width: 39%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4;
-    /* 删除了原本的 height: 43% */
   }
   .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
   .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
@@ -997,8 +994,10 @@
   .message-wrap {
     margin-top: clamp(36px, 7.5vh, 62px);
   }
+  
+  /* ---------- 聊天留言区（高度降级） ---------- */
   .chat-display {
-    height: 140px;
+    height: 110px; /* 整体高度缩小 */
     overflow: hidden;
     position: relative;
     display: flex;
@@ -1016,7 +1015,7 @@
   .chat-item {
     align-self: flex-end;
     max-width: 80%;
-    padding: 8px 14px;
+    padding: 6px 12px; /* 内边距缩紧 */
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px 12px 0 12px;
     font-family: var(--serif);
@@ -1032,7 +1031,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-height: calc(1.5em * 2 + 16px);
+    max-height: calc(1.5em * 2 + 12px); /* 严格限制高度 */
   }
   @keyframes msgIn {
     to { opacity: 1; transform: translateY(0); }
@@ -1155,7 +1154,7 @@
     .notice__title { padding-bottom: 10px; font-size: clamp(19px, 5.2vw, 22px); }
     .accordion-text { font-size: 10px; line-height: 1.6; }
     .message-wrap { margin-top: clamp(28px, 5.5vh, 44px); }
-    .chat-display { height: 120px; }
+    .chat-display { height: 95px; } /* 进一步缩小 */
   }
 
   @media (max-height: 660px) {
@@ -1168,7 +1167,7 @@
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
     .message-wrap { margin-top: 24px; }
-    .chat-display { height: 100px; }
+    .chat-display { height: 80px; } /* 再一步缩小 */
   }
 
   @media (min-width: 610px) {
