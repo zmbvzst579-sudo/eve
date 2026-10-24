@@ -944,21 +944,29 @@
     box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
   }
-  .end-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); }
-  .end-photo figcaption {
-    position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
-    font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
+ /* 找到这里的 .end-photo img */
+  .end-photo img { 
+    width: 100%; 
+    aspect-ratio: 1 / 1; /* 新增：强制照片本身为正方形，彻底解决被压扁的问题 */
+    object-fit: cover; 
+    filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); 
   }
   
+  /* 找到下面这三个尺寸定义 */
   .end-photo--main {
-    width: 50%; height: 80%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3;
+    width: 50%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3;
+    /* 删除了原本的 height: 80% */
   }
   .end-photo--main img { object-position: 50% 40%; }
+  
   .end-photo--top {
-    width: 34%; height: 47%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2;
+    width: 34%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2;
+    /* 删除了原本的 height: 47% */
   }
+  
   .end-photo--bottom {
-    width: 39%; height: 43%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4;
+    width: 39%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4;
+    /* 删除了原本的 height: 43% */
   }
   .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
   .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
@@ -1155,7 +1163,7 @@
     .profile-body { margin-top: -48px; }
     .style-photo { height: 110px; }
     .accordion-text { font-size: 9.2px; line-height: 1.5; }
-    .end-collage { height: 190px; margin: 12px 0; }
+    .end-collage { height: 230px; margin: 12px 0; } 
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
