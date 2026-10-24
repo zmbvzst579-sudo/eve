@@ -734,7 +734,7 @@
   .player {
     display: flex; align-items: center; gap: 16px;
     margin-top: 24px; padding: 20px 22px; 
-    border-radius: 0; /* 将原先的 16px 改为 0 */
+    border-radius: 0;
     border: 1px solid rgba(255, 255, 255, .08);
     background: rgba(20, 15, 18, .65);
     -webkit-backdrop-filter: blur(6px) saturate(1.35);
@@ -902,7 +902,7 @@
   }
 
   /* ============================================================
-     PAGE 4 — 尾声 + 聊天留言
+     PAGE 4 — 尾声 + 留言
   ============================================================ */
   .page-end { background: #090708; overflow: hidden; }
   .page-end .page__scroll {
@@ -933,46 +933,70 @@
   .end__fr {
     margin-top: 4px; padding-left: 13px; border-left: 1px solid var(--pink-line);
     font-family: var(--latin); font-style: italic;
-    font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
+    font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; color: var(--ink-soft);
   }
 
+  /* 网格照片区 */
   .end-collage {
-    position: relative; height: clamp(230px, 38vh, 340px); margin: clamp(16px, 2.6vh, 24px) 0; perspective: 900px;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+    margin: clamp(20px, 4vh, 36px) 0 clamp(24px, 5vh, 40px) 0;
+    padding: 0 10px;
+    z-index: 2;
   }
+
   .end-photo {
-    position: absolute; padding: 6px 6px 26px; background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
-    box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
-    transition: transform .7s var(--ease);
+    position: relative;
+    background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
+    padding: 6px 6px 26px;
+    box-shadow: 0 17px 33px rgba(0,0,0,.54), inset 0 0 0 1px rgba(255,250,248,.13);
+    transition: transform .4s var(--ease);
   }
+  
   .end-photo img { 
     width: 100%; 
-    aspect-ratio: 1 / 1; /* 强制照片本身为正方形 */
+    aspect-ratio: 1 / 1; 
     object-fit: cover; 
     filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); 
   }
-  .end-photo figcaption {
-    position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
-    font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
-  }
   
+  .end-photo figcaption {
+    position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;
+    font-family: var(--serif); font-size: 10px; letter-spacing: .2em; text-indent: .2em; color: #3a2e31;
+  }
+
   .end-photo--main {
-    width: 50%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3;
+    grid-column: 1;
+    grid-row: 1 / 3;
+    align-self: center;
+    transform: rotate(-4deg);
+    z-index: 3;
   }
-  .end-photo--main img { object-position: 50% 40%; }
+
   .end-photo--top {
-    width: 34%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2;
+    grid-column: 2;
+    grid-row: 1;
+    transform: rotate(3deg);
+    z-index: 2;
+    margin-top: 10px;
   }
+
   .end-photo--bottom {
-    width: 39%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4;
+    grid-column: 2;
+    grid-row: 2;
+    transform: rotate(-2deg);
+    z-index: 4;
+    margin-bottom: 10px;
   }
-  .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
-  .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
-  .end-collage:hover .end-photo--bottom { transform: rotate(0deg) translateY(-2px); }
+
+  .end-photo:active { transform: scale(.96) rotate(0); }
 
   .end-tape {
     position: absolute; z-index: 8;
-    width: 72px; height: 22px;
-    left: -18px; top: -11px;
+    width: 65px; height: 20px;
+    left: -15px; top: -10px;
     transform: rotate(-20deg);
     background: rgba(225,203,204,.42);
     border-left: 1px dashed rgba(255,255,255,.38);
@@ -981,96 +1005,62 @@
     pointer-events: none;
   }
 
-  .end-copy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
-  
-  .end-copy .micro { font-size: 6px; margin-bottom: 6px; display: block; color: var(--ink-mute); }
+  /* 文字区域 */
+  .end-copy { 
+    display: flex; flex-direction: column; align-items: flex-end; text-align: right; 
+    margin-bottom: 30px;
+    z-index: 5;
+  }
+  .end-copy .micro { font-size: 6px; margin-bottom: 6px; color: var(--ink-mute); letter-spacing: .2em; }
   .end-title {
     font-family: var(--serif); font-weight: 300;
     font-size: clamp(14px, 4vw, 18px); line-height: 1.7; letter-spacing: .05em;
     color: #eee3e3; white-space: nowrap; text-shadow: 0 4px 30px rgba(0,0,0,.7);
   }
-  .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; text-shadow: 0 0 30px rgba(217,143,160,.12); }
+  .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; }
 
-  .message-wrap {
-    margin-top: clamp(36px, 7.5vh, 62px);
-  }
+  /* 留言区 */
+  .message-wrap { margin-bottom: 40px; z-index: 5; }
   
-  /* ---------- 聊天留言区（高度降级） ---------- */
-  .chat-display {
-    height: 110px; /* 整体高度缩小 */
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding-bottom: 10px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 100%);
-  }
-  .chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .chat-item {
-    align-self: flex-end;
-    max-width: 80%;
-    padding: 6px 12px; /* 内边距缩紧 */
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 12px 12px 0 12px;
-    font-family: var(--serif);
-    font-size: 11.5px;
-    line-height: 1.5;
-    color: var(--ink);
-    animation: msgIn 0.4s var(--ease) forwards;
-    opacity: 0;
-    transform: translateY(10px);
-    word-break: break-all;
-    text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    max-height: calc(1.5em * 2 + 12px); /* 严格限制高度 */
-  }
-  @keyframes msgIn {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   .message-box {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 13px;
+    padding: 12px 14px;
     border: 1px solid rgba(235, 230, 228, .18);
-    border-radius: 0;
     background: rgba(255, 255, 255, .02);
-    transition: border-color .4s var(--ease), background .4s var(--ease);
+    transition: border-color .4s, background .4s;
   }
   .message-box:focus-within {
     border-color: rgba(219, 168, 180, .55);
     background: rgba(255, 255, 255, .045);
   }
-  .message-input {
-    flex: 1; min-width: 0; background: none; border: 0; outline: none;
-    color: var(--ink); font-family: var(--serif); font-size: 12px; letter-spacing: .04em; padding: 2px 0;
-  }
-  .message-input::placeholder { color: var(--ink-faint); letter-spacing: .08em; }
-  .message-send {
-    flex: 0 0 auto; width: 26px; height: 26px; display: grid; place-items: center;
-    background: none; border: 0; color: var(--pink); cursor: pointer; transition: color .3s, transform .2s; outline: none;
-  }
-  .message-send:hover { color: #f2e6e8; }
-  .message-send:active { transform: translateX(2px); }
-  .message-send svg { width: 15px; height: 15px; overflow: visible; }
-  .message-send svg path { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
-  .message-hint {
-    margin-top: 10px; text-align: center; font-family: var(--sans);
-    font-size: 7px; letter-spacing: .24em; color: var(--ink-faint); text-transform: uppercase;
+  
+  .message-box:has(.message-input:disabled) {
+    border-color: rgba(255, 255, 255, .06);
+    background: transparent;
   }
 
-  .end__fin {
-    margin-top: 26px; padding-top: 18px;
-    font-family: var(--sans); font-size: 6px; letter-spacing: .35em; color: var(--ink-faint);
+  .message-input {
+    flex: 1; min-width: 0; background: none; border: 0; outline: none;
+    color: var(--ink); font-family: var(--serif); font-size: 12px; padding: 2px 0;
+    transition: color .3s;
   }
+  .message-input::placeholder { color: var(--ink-faint); }
+  .message-input:disabled { color: var(--ink-mute); cursor: default; opacity: 0.7; }
+
+  .message-send {
+    width: 26px; height: 26px; display: grid; place-items: center;
+    color: var(--pink); cursor: pointer; transition: transform .2s; outline: none;
+  }
+  .message-send:active { transform: translateX(2px); }
+  .message-send svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+
+  .message-hint {
+    margin-top: 10px; text-align: center; font-family: var(--sans);
+    font-size: 7px; letter-spacing: .24em; color: var(--ink-faint);
+    transition: opacity .5s;
+  }
+
+  .end__fin { margin-top: 0; font-family: var(--sans); font-size: 6px; letter-spacing: .35em; color: var(--ink-faint); }
 
   /* ============================================================
      PAGER
@@ -1144,7 +1134,7 @@
     .player__disc { width: 42px; height: 42px; }
     .player__title { font-size: 14px; }
     .confirmed-img { width: 70px; }
-    .end-tape { width: 60px; left: -14px; top: -9px; }
+    .end-tape { width: 55px; left: -12px; top: -8px; }
   }
 
   @media (max-height: 760px) {
@@ -1153,8 +1143,6 @@
     .style-photo { height: clamp(130px, 20vh, 180px); }
     .notice__title { padding-bottom: 10px; font-size: clamp(19px, 5.2vw, 22px); }
     .accordion-text { font-size: 10px; line-height: 1.6; }
-    .message-wrap { margin-top: clamp(28px, 5.5vh, 44px); }
-    .chat-display { height: 95px; } /* 进一步缩小 */
   }
 
   @media (max-height: 660px) {
@@ -1162,12 +1150,12 @@
     .profile-body { margin-top: -48px; }
     .style-photo { height: 110px; }
     .accordion-text { font-size: 9.2px; line-height: 1.5; }
-    .end-collage { height: 230px; margin: 12px 0; } 
+    .end-collage { margin: 12px 0 16px 0; }
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
-    .message-wrap { margin-top: 24px; }
-    .chat-display { height: 80px; } /* 再一步缩小 */
+    .end-copy { margin-bottom: 20px; }
+    .message-wrap { margin-top: 5px; }
   }
 
   @media (min-width: 610px) {
@@ -1469,7 +1457,7 @@
       </div>
     </section>
 
-    <!-- ---------- PAGE 04 · 尾声 + 聊天留言 ---------- -->
+    <!-- ---------- PAGE 04 · 尾声 + 单向留言 ---------- -->
     <section class="page page-end" data-page="3" aria-label="第四页，尾声">
       <div class="end__bg" aria-hidden="true"></div>
       <div class="end__veil" aria-hidden="true"></div>
@@ -1503,16 +1491,13 @@
         </div>
 
         <div class="message-wrap reveal" style="--d:.4s">
-          <div class="chat-display" id="chatDisplay">
-            <div class="chat-list" id="chatList"></div>
-          </div>
           <div class="message-box" id="messageBox">
             <input class="message-input" id="messageInput" type="text" maxlength="24" placeholder="对我说些什么吧？" aria-label="留言">
             <button class="message-send" id="messageSend" type="button" aria-label="寄出">
               <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10H16M11 5L16 10L11 15"/></svg>
             </button>
           </div>
-          <p class="message-hint">轻触寄出</p>
+          <p class="message-hint" id="messageHint">轻触寄出</p>
         </div>
 
         <p class="end__fin">FIN · 04</p>
@@ -1549,10 +1534,9 @@
   var playerBar = document.getElementById("playerBar");
   var bgm = document.getElementById("bgm");
 
-  var chatDisplay = document.getElementById("chatDisplay");
-  var chatList = document.getElementById("chatList");
   var messageInput = document.getElementById("messageInput");
   var messageSend = document.getElementById("messageSend");
+  var messageHint = document.getElementById("messageHint");
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.innerWidth < 760;
@@ -1563,6 +1547,7 @@
   var leaveTimer = null;
   var isDragging = false;
   var startX = 0;
+  var hasSent = false; 
 
   var T_REVEAL = reduceMotion ? 0 : 3200;
   var T_HIDE = reduceMotion ? 200 : 4400;
@@ -1865,25 +1850,23 @@
     });
   }
 
-  /* ---------------- 聊天式留言 ---------------- */
+  /* ---------------- 留言功能（仅限一次） ---------------- */
   function sendMessage() {
-    if (!messageInput || !chatList) return;
+    if (hasSent || !messageInput || !messageSend) return;
+    
     var val = messageInput.value.trim();
     if (!val) return;
 
-    var msgDiv = document.createElement("div");
-    msgDiv.className = "chat-item";
-    msgDiv.textContent = val;
-
-    chatList.appendChild(msgDiv);
+    hasSent = true;
+    
     messageInput.value = "";
+    messageInput.disabled = true;
+    messageInput.placeholder = "信件已送达"; 
+    
+    messageSend.style.display = "none";
+    if (messageHint) messageHint.style.opacity = "0";
+    
     vibrate(8);
-
-    chatDisplay.scrollTop = chatDisplay.scrollHeight;
-
-    if (chatList.children.length > 20) {
-      chatList.removeChild(chatList.firstElementChild);
-    }
   }
 
   if (messageSend) messageSend.addEventListener("click", sendMessage);
