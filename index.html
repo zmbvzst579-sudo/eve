@@ -1,13 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050506">
 <title>eve</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -21,10 +18,8 @@
     --pink-soft: rgba(219, 168, 180, .55);
     --pink-line: rgba(219, 168, 180, .26);
     --rose: #b9707f;
-    
     --dusty-rose: #c98b9a;
     --cold-grey: #a8a3a5;
-    
     --glass-line: rgba(255, 255, 255, .08);
     --pad-x: clamp(22px, 6vw, 30px);
     --top-pad: calc(74px + env(safe-area-inset-top));
@@ -438,7 +433,6 @@
     transform: translate3d(0, 0, 0) rotate(6deg);
     opacity: 0;
     transition: opacity 1.2s var(--ease) .2s;
-    will-change: transform;
   }
   .page.is-active .page-num { opacity: 1; }
 
@@ -504,7 +498,6 @@
     padding: var(--top-pad) 0 0; 
   }
 
-  /* 背景大字 eve */
   .bg-eve {
     position: absolute;
     top: 5%;
@@ -527,7 +520,6 @@
     letter-spacing: .02em; color: var(--ink-mute); margin-top: 4px; max-width: 88%;
   }
 
-  /* 照片 85% 靠左，留白 */
   .profile-hero {
     position: relative; 
     width: 85%;
@@ -555,7 +547,6 @@
       linear-gradient(90deg, rgba(5,5,6,.18), transparent 34%);
   }
 
-  /* 右侧留白处的竖排日期 */
   .date-vertical {
     position: absolute;
     right: var(--pad-x);
@@ -571,7 +562,6 @@
   }
   .page.is-active .date-vertical { opacity: 1; }
 
-  /* 邮戳 */
   .youchuo-stamp {
     position: absolute;
     top: 90px;
@@ -716,8 +706,8 @@
     position: relative; padding: 12px 14px; flex: 1;
     border-radius: 2px; border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(9, 8, 10, .65);
-    -webkit-backdrop-filter: blur(8px) saturate(1.2);
-    backdrop-filter: blur(8px) saturate(1.2);
+    -webkit-backdrop-filter: blur(6px) saturate(1.2);
+    backdrop-filter: blur(6px) saturate(1.2);
     color: #e9dde0; cursor: pointer; outline: none;
     box-shadow: 0 10px 30px rgba(0,0,0,.4);
     transition: transform .3s var(--ease), border-color .4s, background .4s, box-shadow .4s;
@@ -739,20 +729,16 @@
     letter-spacing: .02em; line-height: 1.65; margin-top: 6px; padding-top: 6px;
     border-top: 1px solid rgba(219, 168, 180, .16);
   }
-  .style-card .card-mark {
-    position: absolute; right: 6px; bottom: 4px; width: 18px; z-index: 2;
-    opacity: 0; transform: rotate(12deg) scale(.5);
-    transition: opacity .4s, transform .5s var(--ease-soft); pointer-events: none;
-  }
-  .style-card.is-marked .card-mark { opacity: .7; transform: rotate(12deg) scale(1); }
 
+  /* ---------- 播放器 ---------- */
   .player {
     display: flex; align-items: center; gap: 16px;
-    margin-top: 24px; padding: 20px 22px; border-radius: 16px;
+    margin-top: 24px; padding: 20px 22px; 
+    border-radius: 0; /* 将原先的 16px 改为 0 */
     border: 1px solid rgba(255, 255, 255, .08);
     background: rgba(20, 15, 18, .65);
-    -webkit-backdrop-filter: blur(16px) saturate(1.35);
-    backdrop-filter: blur(16px) saturate(1.35);
+    -webkit-backdrop-filter: blur(6px) saturate(1.35);
+    backdrop-filter: blur(6px) saturate(1.35);
     box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
     opacity: 0; transform: translateY(20px);
     transition: opacity .8s var(--ease), transform .8s var(--ease-soft);
@@ -802,7 +788,7 @@
   }
 
   /* ============================================================
-     PAGE 3 — 下单须知 (彻底修复滚动)
+     PAGE 3 — 下单须知
   ============================================================ */
   .page-notice { background: #070608; }
   .page-notice::before {
@@ -825,8 +811,8 @@
     padding: clamp(20px, 4.5vw, 26px) clamp(16px, 4vw, 22px);
     border-radius: 4px; border: 1px solid rgba(255, 255, 255, .12);
     background: rgba(9, 8, 10, .7);
-    -webkit-backdrop-filter: blur(8px) saturate(1.2);
-    backdrop-filter: blur(8px) saturate(1.2);
+    -webkit-backdrop-filter: blur(6px) saturate(1.2);
+    backdrop-filter: blur(6px) saturate(1.2);
     box-shadow: 0 28px 60px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .1);
     margin-bottom: 40px;
   }
@@ -978,7 +964,6 @@
   .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
   .end-collage:hover .end-photo--bottom { transform: rotate(0deg) translateY(-2px); }
 
-  /* 胶带 —— 贴在“板评”主卡左上角（相对主卡定位）*/
   .end-tape {
     position: absolute; z-index: 8;
     width: 72px; height: 22px;
@@ -993,7 +978,6 @@
 
   .end-copy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
   
-  /* 字号改小 */
   .end-copy .micro { font-size: 6px; margin-bottom: 6px; display: block; color: var(--ink-mute); }
   .end-title {
     font-family: var(--serif); font-weight: 300;
@@ -1002,9 +986,8 @@
   }
   .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; text-shadow: 0 0 30px rgba(217,143,160,.12); }
 
-  /* 留言框上移 */
   .message-wrap {
-    margin-top: clamp(20px, 4vh, 30px);
+    margin-top: clamp(36px, 7.5vh, 62px);
   }
   .chat-display {
     height: 140px;
@@ -1030,12 +1013,18 @@
     border-radius: 12px 12px 0 12px;
     font-family: var(--serif);
     font-size: 11.5px;
+    line-height: 1.5;
     color: var(--ink);
     animation: msgIn 0.4s var(--ease) forwards;
     opacity: 0;
     transform: translateY(10px);
     word-break: break-all;
     text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: calc(1.5em * 2 + 16px);
   }
   @keyframes msgIn {
     to { opacity: 1; transform: translateY(0); }
@@ -1043,12 +1032,19 @@
 
   .message-box {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 0; border-bottom: 1px solid rgba(235, 230, 228, .18); transition: border-color .4s;
+    padding: 10px 13px;
+    border: 1px solid rgba(235, 230, 228, .18);
+    border-radius: 0;
+    background: rgba(255, 255, 255, .02);
+    transition: border-color .4s var(--ease), background .4s var(--ease);
   }
-  .message-box:focus-within { border-color: rgba(219, 168, 180, .55); }
+  .message-box:focus-within {
+    border-color: rgba(219, 168, 180, .55);
+    background: rgba(255, 255, 255, .045);
+  }
   .message-input {
     flex: 1; min-width: 0; background: none; border: 0; outline: none;
-    color: var(--ink); font-family: var(--serif); font-size: 12px; letter-spacing: .04em; padding: 4px 0;
+    color: var(--ink); font-family: var(--serif); font-size: 12px; letter-spacing: .04em; padding: 2px 0;
   }
   .message-input::placeholder { color: var(--ink-faint); letter-spacing: .08em; }
   .message-send {
@@ -1060,7 +1056,7 @@
   .message-send svg { width: 15px; height: 15px; overflow: visible; }
   .message-send svg path { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
   .message-hint {
-    margin-top: 9px; text-align: center; font-family: var(--sans);
+    margin-top: 10px; text-align: center; font-family: var(--sans);
     font-size: 7px; letter-spacing: .24em; color: var(--ink-faint); text-transform: uppercase;
   }
 
@@ -1079,8 +1075,8 @@
     padding: 5px 7px 5px 13px; border-radius: 999px;
     background: linear-gradient(160deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .012) 48%, rgba(185, 112, 127, .04)), rgba(9, 8, 10, .7);
     border: 1px solid var(--glass-line);
-    -webkit-backdrop-filter: blur(16px) saturate(1.25);
-    backdrop-filter: blur(16px) saturate(1.25);
+    -webkit-backdrop-filter: blur(6px) saturate(1.25);
+    backdrop-filter: blur(6px) saturate(1.25);
     box-shadow: 0 12px 30px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .08);
     opacity: 0; transform: translateY(-8px); pointer-events: none;
     transition: opacity .5s ease, transform .6s var(--ease);
@@ -1150,7 +1146,7 @@
     .style-photo { height: clamp(130px, 20vh, 180px); }
     .notice__title { padding-bottom: 10px; font-size: clamp(19px, 5.2vw, 22px); }
     .accordion-text { font-size: 10px; line-height: 1.6; }
-    .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
+    .message-wrap { margin-top: clamp(28px, 5.5vh, 44px); }
     .chat-display { height: 120px; }
   }
 
@@ -1163,7 +1159,7 @@
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
-    .message-wrap { margin-top: 20px; }
+    .message-wrap { margin-top: 24px; }
     .chat-display { height: 100px; }
   }
 
@@ -1181,9 +1177,13 @@
     .reveal { filter: none; transform: none; transition-duration: .35s; }
     .char, .slide-item { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
     .profile-footer, .style-footer { opacity: 1 !important; transform: none !important; }
-    .dust, .petal-field { display: none; }
+    .dust, #dust, .petal-field { display: none; }
     .accordion-content { grid-template-rows: 1fr !important; }
     .accordion-icon { display: none; }
+    .stage-bg,
+    .page-style::before,
+    .page-notice::before,
+    .end__bg { filter: none; }
   }
 </style>
 </head>
@@ -1260,19 +1260,16 @@
       <div class="petal-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <span class="page-num" aria-hidden="true">01</span>
       
-      <!-- 巨大背景 eve -->
       <div class="bg-eve" aria-hidden="true">eve</div>
-      <!-- 邮戳 -->
-      <img class="youchuo-stamp" src="images/youchuo.webp" alt="邮戳">
+      <img class="youchuo-stamp" src="images/youchuo.webp" alt="邮戳" loading="lazy" decoding="async">
 
       <div class="page__scroll">
         <div class="profile-header reveal" style="--d:.04s">
           <p class="profile-fr">𝑪'𝒆𝒔𝒕 𝒖𝒏 𝒑𝒍𝒂𝒊𝒔𝒊𝒓 𝒅𝒆 𝒕𝒆 𝒗𝒐𝒊𝒓.</p>
         </div>
 
-        <!-- 照片错位，右边留白 -->
         <figure class="profile-hero reveal" style="--d:.1s">
-          <img src="images/image1.webp" alt="雾粉色百合" decoding="async">
+          <img src="images/image1.webp" alt="雾粉色百合" loading="eager" decoding="async">
         </figure>
         <div class="date-vertical">2026.10</div>
 
@@ -1329,8 +1326,8 @@
         </div>
 
         <div class="style-photo">
-          <img src="images/image4.webp" alt="雾粉色百合" decoding="async">
-          <img class="stamp-mini" src="images/youpiao.webp" alt="" aria-hidden="true">
+          <img src="images/image4.webp" alt="雾粉色百合" loading="lazy" decoding="async">
+          <img class="stamp-mini" src="images/youpiao.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
         </div>
 
         <div class="style-grid">
@@ -1341,7 +1338,6 @@
             </div>
             <div class="style-card" data-mark role="button" tabindex="0" aria-pressed="false">
               <p>日常高恋 / 暧昧调情 / 微文艺<br>真诚直球 / 微擦高擦 / 动描</p>
-              <img class="card-mark" src="images/stickers/s2_12.png" alt="" aria-hidden="true">
             </div>
           </div>
 
@@ -1353,7 +1349,6 @@
             <div class="style-card" data-mark role="button" tabindex="0" aria-pressed="false">
               <p>热脸贱 / 姐感 / 年上 / 狗妹 / 狗姐 / 恶趣</p>
               <p class="warn">近期掉落恶俗坏女人或者狗塑自己 慎点</p>
-              <img class="card-mark" src="images/stickers/s2_12.png" alt="" aria-hidden="true">
             </div>
           </div>
         </div>
@@ -1393,7 +1388,6 @@
           
           <h2 class="notice__title">下 单 须 知</h2>
 
-          <!-- TERMS 01 默认展开 -->
           <div class="accordion-item is-open">
             <button class="accordion-header" aria-expanded="true">
               <span>TERMS 01</span>
@@ -1448,7 +1442,7 @@
                   <p>6. 婉拒17-，如果发现隐瞒或者披马甲将永拒。</p>
                   <p>7. 婉拒把我们的约会内容录屏，截图，<br>以及直播传播给他人。</p>
                   <p>8. 我是“回合制”选手，请恋人安静听我讲完话，<br>为了你的体验，尽量不要打断我讲话。</p>
-                  <p>9. 婉拒低无 / 低恋选手，谢谢配合。<img class="confirmed-img" src="images/confirmed.webp" alt="Confirmed"></p>
+                  <p>9. 婉拒低无 / 低恋选手，谢谢配合。<img class="confirmed-img" src="images/confirmed.webp" alt="Confirmed" loading="lazy" decoding="async"></p>
                 </div>
               </div>
             </div>
@@ -1460,7 +1454,6 @@
           </div>
         </div>
 
-        <!-- LETTER 03 在文档流中，会被内容撑下去 -->
         <footer class="page-foot reveal" style="--d:.14s">
           <span>LETTER <b>03</b></span>
           <i aria-hidden="true"></i>
@@ -1481,17 +1474,16 @@
 
         <div class="end-collage reveal" style="--d:.2s">
           <figure class="end-photo end-photo--main">
-            <img src="images/image5.webp" alt="板评配图">
+            <img src="images/image5.webp" alt="板评配图" loading="lazy" decoding="async">
             <figcaption>板评</figcaption>
-            <!-- 胶带贴在主卡左上角 -->
             <span class="end-tape" aria-hidden="true"></span>
           </figure>
           <figure class="end-photo end-photo--top">
-            <img src="images/image8.webp" alt="抽象花卉">
+            <img src="images/image8.webp" alt="抽象花卉" loading="lazy" decoding="async">
             <figcaption>话术</figcaption>
           </figure>
           <figure class="end-photo end-photo--bottom">
-            <img src="images/image12.webp" alt="雾粉枝叶">
+            <img src="images/image12.webp" alt="雾粉枝叶" loading="lazy" decoding="async">
             <figcaption>小卡</figcaption>
           </figure>
         </div>
@@ -1503,12 +1495,9 @@
           </h2>
         </div>
 
-        <!-- 聊天式留言 -->
         <div class="message-wrap reveal" style="--d:.4s">
           <div class="chat-display" id="chatDisplay">
-            <div class="chat-list" id="chatList">
-              <!-- 留言内容会插到这里 -->
-            </div>
+            <div class="chat-list" id="chatList"></div>
           </div>
           <div class="message-box" id="messageBox">
             <input class="message-input" id="messageInput" type="text" maxlength="24" placeholder="对我说些什么吧？" aria-label="留言">
@@ -1516,7 +1505,7 @@
               <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10H16M11 5L16 10L11 15"/></svg>
             </button>
           </div>
-          <p class="message-hint">轻触寄出 · 它会留在这里</p>
+          <p class="message-hint">轻触寄出</p>
         </div>
 
         <p class="end__fin">FIN · 04</p>
@@ -1568,7 +1557,7 @@
   var isDragging = false;
   var startX = 0;
 
-  var T_REVEAL = reduceMotion ? 0 : 3200; // 增加停顿时间
+  var T_REVEAL = reduceMotion ? 0 : 3200;
   var T_HIDE = reduceMotion ? 200 : 4400;
   var LABELS = ["第一页，来信", "第二页，风格索引", "第三页，下单须知", "第四页，尾声"];
 
@@ -1756,7 +1745,6 @@
   document.addEventListener("mousedown", function (e) {
     if (!isOpen) return;
     if (e.target.closest("button, a, input, [role='button']")) return;
-    // 在滚动区里拖动时不触发翻页（交给原生滚动）
     if (e.target.closest(".page__scroll")) {
       isDragging = false;
       return;
@@ -1901,7 +1889,7 @@
     });
   }
 
-  /* ---------------- 灰尘粒子 ---------------- */
+  /* ---------------- 灰尘粒子：方形 + 30fps 节流 ---------------- */
   (function initDust() {
     if (reduceMotion) return;
     var canvas = document.getElementById("dust");
@@ -1910,6 +1898,7 @@
     var particles = [];
     var dpr = 1;
     var raf = null;
+    var lastDraw = 0;
     var w = 0, h = 0;
 
     function resizeCanvas() {
@@ -1932,7 +1921,12 @@
       }
     }
 
-    function draw() {
+    function draw(now) {
+      raf = window.requestAnimationFrame(draw);
+      if (now === undefined) now = performance.now();
+      if (now - lastDraw < 33) return;
+      lastDraw = now;
+
       ctx.clearRect(0, 0, w, h);
       for (var i = 0; i < particles.length; i++) {
         var p = particles[i];
@@ -1941,20 +1935,23 @@
         if (p.x < -5) p.x = w + 5;
         if (p.x > w + 5) p.x = -5;
         var alpha = p.a * (.55 + .45 * Math.sin(p.tw));
-        ctx.beginPath();
-        ctx.fillStyle = p.rose ? "rgba(219, 168, 180," + alpha + ")" : "rgba(231, 226, 228," + (alpha * .6) + ")";
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = p.rose
+          ? "rgba(219, 168, 180," + alpha + ")"
+          : "rgba(231, 226, 228," + (alpha * .6) + ")";
+        ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
       }
-      raf = window.requestAnimationFrame(draw);
     }
 
     resizeCanvas();
-    draw();
+    raf = window.requestAnimationFrame(draw);
     window.addEventListener("resize", resizeCanvas);
     document.addEventListener("visibilitychange", function () {
-      if (document.hidden) { if (raf) window.cancelAnimationFrame(raf); raf = null; }
-      else if (!raf) { draw(); }
+      if (document.hidden) {
+        if (raf) window.cancelAnimationFrame(raf);
+        raf = null;
+      } else if (!raf) {
+        raf = window.requestAnimationFrame(draw);
+      }
     });
   })();
 
