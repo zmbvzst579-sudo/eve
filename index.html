@@ -684,11 +684,12 @@
     filter: grayscale(.5) contrast(1.05) drop-shadow(0 4px 8px rgba(0,0,0,.5));
   }
 
+  /* 照片墙容器 - 增加高度，确保不重叠 */
   .style-hanging-wrap {
     position: relative;
     width: 100%;
-    height: 350px;
-    margin: 10px 0 0 0;
+    height: 400px;
+    margin: 10px 0 30px 0;
     perspective: 800px;
   }
 
@@ -699,7 +700,7 @@
     z-index: 1;
   }
   .rope-top { top: 0; }
-  .rope-bottom { top: 175px; }
+  .rope-bottom { top: 190px; }
 
   .hang-item-wrap {
     position: absolute;
@@ -732,9 +733,9 @@
   .top-2   { left: 38%; top: 25px; --angle: 3deg; }
   .top-3   { right: 6%; top: 10px; --angle: 8deg; }
   
-  .bot-1   { left: 6%; top: 185px;  --angle: -3deg; }
-  .bot-2   { left: 38%; top: 195px; --angle: 6deg; }
-  .bot-3   { right: 6%; top: 185px; --angle: -5deg; }
+  .bot-1   { left: 6%; top: 205px;  --angle: -3deg; }
+  .bot-2   { left: 38%; top: 215px; --angle: 6deg; }
+  .bot-3   { right: 6%; top: 205px; --angle: -5deg; }
 
   .dark-clip {
     width: 20px; height: 34px;
@@ -996,25 +997,43 @@
     font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
   }
 
+  /* 拍立得容器增加高度 */
   .end-collage {
-    position: relative; height: clamp(230px, 38vh, 340px); margin: clamp(16px, 2.6vh, 24px) 0; perspective: 900px;
+    position: relative; 
+    height: clamp(280px, 40vh, 360px); 
+    margin: clamp(16px, 2.6vh, 24px) 0; 
+    perspective: 900px;
   }
+  
   .end-photo {
-    position: absolute; padding: 6px 6px 26px; background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
+    position: absolute; 
+    padding: 6px 6px 26px; 
+    background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
     box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
     cursor: pointer;
+    /* 移除固定高度百分比 */
   }
-  .end-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); }
+  
+  /* 强制照片为正方形，取消变形 */
+  .end-photo img { 
+    width: 100%; 
+    aspect-ratio: 1 / 1; 
+    object-fit: cover; 
+    filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); 
+  }
+  
   .end-photo figcaption {
     position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
     font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
   }
   
-  .end-photo--main { width: 50%; height: 80%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3; }
+  /* 去掉高度限制 */
+  .end-photo--main { width: 50%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3; }
   .end-photo--main img { object-position: 50% 40%; }
-  .end-photo--top { width: 34%; height: 47%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2; }
-  .end-photo--bottom { width: 39%; height: 43%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4; }
+  .end-photo--top { width: 34%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2; }
+  .end-photo--bottom { width: 39%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4; }
+  
   .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
   .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
   .end-collage:hover .end-photo--bottom { transform: rotate(0deg) translateY(-2px); }
@@ -1110,7 +1129,7 @@
   .message-input {
     flex: 1; min-width: 0; background: none; border: 0; outline: none;
     color: var(--ink); font-family: var(--serif); 
-    font-size: 16px; /* 解决 iOS 自动放大问题 */
+    font-size: 16px;
     letter-spacing: .04em; padding: 2px 0;
     transition: color .3s;
   }
@@ -1269,6 +1288,7 @@
     .bot-1 { left: 2%; } .bot-2 { left: 35%; } .bot-3 { right: 2%; }
   }
 
+  /* 在矮屏幕上，进一步确保容器足够高 */
   @media (max-height: 760px) {
     .profile-hero { height: min(38vh, 300px); min-height: 200px; }
     .profile-body { margin-top: -56px; }
@@ -1278,9 +1298,9 @@
     .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
     .chat-display { height: 120px; }
     
-    .style-hanging-wrap { height: 330px; }
-    .rope-bottom { top: 165px; }
-    .bot-1 { top: 175px; } .bot-2 { top: 185px; } .bot-3 { top: 175px; }
+    .style-hanging-wrap { height: 380px; margin-bottom: 20px; }
+    .rope-bottom { top: 180px; }
+    .bot-1 { top: 195px; } .bot-2 { top: 205px; } .bot-3 { top: 195px; }
     .player { margin-top: 10px; }
   }
 
@@ -1288,16 +1308,16 @@
     .profile-hero { height: 32vh; min-height: 170px; }
     .profile-body { margin-top: -48px; }
     .accordion-text { font-size: 9.2px; line-height: 1.5; }
-    .end-collage { height: 190px; margin: 12px 0; }
+    .end-collage { height: 240px; margin: 12px 0; }
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
     .message-wrap { margin-top: 20px; }
     .chat-display { height: 100px; }
     
-    .style-hanging-wrap { height: 310px; }
-    .rope-bottom { top: 155px; }
-    .bot-1 { top: 165px; } .bot-2 { top: 175px; } .bot-3 { top: 165px; }
+    .style-hanging-wrap { height: 360px; margin-bottom: 15px; }
+    .rope-bottom { top: 170px; }
+    .bot-1 { top: 185px; } .bot-2 { top: 195px; } .bot-3 { top: 185px; }
     .player { margin-top: 8px; }
   }
 
@@ -1327,8 +1347,8 @@
 <!-- ⚠️ 这里填入你刚刚拿到的 jsonbin 数据 -->
 <script>
   const CONFIG = {
-    BIN_ID: '6adde254ffd5d160538a3354', 
-    MASTER_KEY: '$2a$10$4yL.sj7tmu7tNddTYctT0uoNbNOdkZYRHBPEJGDf5x2YzcZ/rPDsW',           
+    BIN_ID: 'YOUR_BIN_ID', 
+    MASTER_KEY: '$2a$10$YOUR_MASTER_KEY',           
     ADMIN_PASSWORD: 'eve520'             
   };
 </script>
