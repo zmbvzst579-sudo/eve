@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#050506">
 <title>eve</title>
 
-<!-- 预加载首屏最关键的几张图，确保秒开不闪烁 -->
-<link rel="preload" as="image" href="images/naopiqi.webp">
-<link rel="preload" as="image" href="images/huoqiyin.webp">
-<link rel="preload" as="image" href="images/image1.webp">
+<!-- 预加载首屏关键图片，提高优先级 -->
+<link rel="preload" as="image" href="images/naopiqi.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/huoqiyin.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/image1.webp" fetchpriority="high">
 
 <style>
   /* 字体渲染优化 */
@@ -1407,8 +1407,8 @@
 </head>
 <body>
 
-<!-- 音乐：preload="none" 延迟下载 -->
-<audio id="bgm" src="images/bgm.mp3" loop playsinline webkit-playsinline preload="none"></audio>
+<!-- 音乐：preload="metadata" 能极快加载头部信息，并预存部分音频，消除点击延迟 -->
+<audio id="bgm" src="images/bgm.mp3" loop playsinline webkit-playsinline preload="metadata"></audio>
 
 <script>
   const CONFIG = {
@@ -1900,6 +1900,18 @@
   var LABELS = ["第一页，来信", "第二页，风格索引", "第三页，下单须知", "第四页，尾声"];
 
   /* ==========================================================
+     容灾处理：图片加载失败时的兜底
+     ========================================================== */
+  document.addEventListener("error", function (e) {
+    var target = e.target;
+    if (target.tagName.toLowerCase() === 'img') {
+      target.style.backgroundColor = '#111'; 
+      target.style.opacity = '0.3';
+      // target.src = 'data:image/svg+xml;base64,...'; // 也可以选一张极小的本地默认图
+    }
+  }, true);
+
+  /* ==========================================================
      背景音乐逻辑
      ========================================================== */
   function setMusicUI(on){
@@ -1952,7 +1964,6 @@
   /* ==========================================================
      延迟加载背景图逻辑
      ========================================================== */
-  // 当用户滑到某页时，才加载该页的背景图
   function lazyLoadBackground(index) {
     var page = pages[index];
     if (!page) return;
