@@ -483,7 +483,7 @@
 
   .page-foot {
     position: relative;
-    margin-top: 40px;
+    margin-top: 20px; /* 减小间距，让整体更紧凑 */
     padding: 0 var(--pad-x) var(--foot-bottom);
     z-index: 4; display: flex; align-items: center; gap: 10px;
     font-family: var(--sans); font-size: 8px; letter-spacing: .28em;
@@ -654,9 +654,13 @@
     text-shadow: 0 1px 6px rgba(0,0,0,.5);
   }
 
+  /* 修复：加入 min-height 兜底，彻底杜绝部分手机不认 aspect-ratio 导致高度为 0 */
   .style-photo {
     position: relative; 
-    height: clamp(150px, 24vh, 210px); 
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    min-height: 150px;
+    flex-shrink: 0;
     overflow: hidden;
     margin: 0 0 10px; 
     box-shadow: 0 14px 30px rgba(0,0,0,.42);
@@ -971,7 +975,7 @@
   .page-end { background: #090708; overflow: hidden; }
   
   .page-end .page__scroll {
-    padding: var(--top-pad) var(--pad-x) 80px var(--pad-x);
+    padding: var(--top-pad) var(--pad-x) 60px var(--pad-x);
   }
   
   .end__bg {
@@ -1001,18 +1005,19 @@
     font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
     padding-left: 10px;
     border-left: 1px solid var(--pink-line);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 
-  /* ====== 流式 Grid 布局：彻底杜绝重叠，且可以微调错位 ====== */
+  /* 修复：将卡片整体宽度缩小，并居中，解决挤占输入框问题 */
   .end-collage {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 15px 10px;
-    margin: 15px 0 30px 0;
+    gap: 8px;
+    margin: 10px auto 15px auto;
     position: relative;
-    width: 100%;
+    width: 85%;
+    max-width: 320px;
   }
 
   .end-collage > a {
@@ -1023,27 +1028,28 @@
     width: 100%;
   }
 
-  /* 1. 板评 - 占据左侧一整列（已按要求往下放） */
+  /* 板评（左侧大图），往下挪，保持网格特性不重叠 */
   .end-collage > a:nth-child(1) {
     grid-column: 1;
     grid-row: 1 / 3;
-    transform: rotate(-5deg) translate(5px, 30px); /* 这里增加 Y 轴偏移量 */
+    align-self: center;
+    transform: rotate(-4deg) translate(5px, 15px); 
     z-index: 1;
   }
 
-  /* 2. 话术 - 占据右上 */
+  /* 话术（右上角） */
   .end-collage > a:nth-child(2) {
     grid-column: 2;
     grid-row: 1;
-    transform: rotate(4deg) translateY(5px);
+    transform: rotate(3deg) translateY(5px);
     z-index: 2;
   }
 
-  /* 3. 小卡 - 占据右下 */
+  /* 小卡（右下角） */
   .end-collage > a:nth-child(3) {
     grid-column: 2;
     grid-row: 2;
-    transform: rotate(-3deg) translateX(-10px);
+    transform: rotate(-2deg) translateX(-5px);
     z-index: 3;
   }
 
@@ -1051,7 +1057,7 @@
     position: relative;
     width: 100%;
     margin: 0;
-    padding: 5px 5px 24px; 
+    padding: 4px 4px 20px; 
     background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
     box-shadow: 0 10px 20px rgba(0,0,0,.5), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
@@ -1067,8 +1073,8 @@
   }
   
   .end-photo figcaption {
-    position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;
-    font-family: var(--serif); font-size: 10px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
+    position: absolute; left: 0; right: 0; bottom: 4px; text-align: center;
+    font-family: var(--serif); font-size: 9px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
   }
 
   .end-collage > a:hover .end-photo {
@@ -1078,8 +1084,8 @@
 
   .end-tape {
     position: absolute; z-index: 8;
-    width: 72px; height: 22px;
-    left: -18px; top: -11px;
+    width: 50px; height: 16px; 
+    left: -14px; top: -8px;
     transform: rotate(-20deg);
     background: rgba(225,203,204,.42);
     border-left: 1px dashed rgba(255,255,255,.38);
@@ -1091,7 +1097,7 @@
   .end-copy { 
     display: flex; flex-direction: column; align-items: flex-end; text-align: right; 
     position: relative; z-index: 10; 
-    margin-top: 10px;
+    margin-top: 0px; 
     width: 100%;
   }
   
@@ -1105,10 +1111,10 @@
   .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; text-shadow: 0 0 30px rgba(217,143,160,.12); }
 
   .message-wrap {
-    margin-top: 30px;
+    margin-top: 15px; /* 上移输入框 */
   }
   .chat-display {
-    height: 110px;
+    height: 80px; 
     overflow: hidden;
     position: relative;
     display: flex;
@@ -1201,7 +1207,7 @@
   }
 
   .end__fin {
-    margin-top: 30px;
+    margin-top: 20px;
     font-family: var(--sans); font-size: 6px; letter-spacing: .35em; color: var(--ink-faint);
   }
 
@@ -1331,11 +1337,10 @@
   @media (max-height: 760px) {
     .profile-hero { height: min(38vh, 300px); min-height: 200px; }
     .profile-body { margin-top: -56px; }
-    .style-photo { height: clamp(150px, 24vh, 210px); }
     .notice__title { padding-bottom: 10px; font-size: clamp(19px, 5.2vw, 22px); }
     .accordion-text { font-size: 10px; line-height: 1.6; }
-    .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
-    .chat-display { height: 100px; }
+    .message-wrap { margin-top: 10px; }
+    .chat-display { height: 70px; }
     .player { margin-top: 10px; }
   }
 
@@ -1346,8 +1351,8 @@
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
-    .message-wrap { margin-top: 20px; }
-    .chat-display { height: 90px; }
+    .message-wrap { margin-top: 10px; }
+    .chat-display { height: 60px; }
     .player { margin-top: 8px; }
   }
 
@@ -1374,8 +1379,8 @@
 </head>
 <body>
 
-<!-- 音乐标签，请务必确保 images 文件夹下有 bgm.mp3 文件 -->
-<audio id="bgm" src="images/bgm.mp3" loop></audio>
+<!-- 音乐标签：添加了 playsinline 解决移动端播放问题 -->
+<audio id="bgm" src="images/bgm.mp3" loop playsinline webkit-playsinline></audio>
 
 <script>
   const CONFIG = {
@@ -1633,7 +1638,6 @@
 
         </div>
 
-        <!-- 歌名和歌手已修改 -->
         <div class="player" id="player">
           <div class="player__disc" aria-hidden="true"></div>
           <div class="player__meta">
@@ -1847,7 +1851,7 @@
   var adminClose = document.getElementById("adminClose");
 
   var confirmedImg = document.querySelector(".confirmed-img");
-  var bgm = document.getElementById("bgm"); // 获取音频标签
+  var bgm = document.getElementById("bgm"); 
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.innerWidth < 760;
@@ -1879,6 +1883,7 @@
 
   function playMusic(){
     if (!bgm) return;
+    bgm.load(); // 重置播放状态，防止浏览器卡死
     var p = bgm.play();
     if (p && p.then){
       p.then(function(){ setMusicUI(true); })
@@ -2026,9 +2031,7 @@
     if (opened) return;
     opened = true;
 
-    // --- 核心：点击瞬间直接调用播放，绕过浏览器拦截 ---
-    playMusic();
-    // ------------------------------------------------
+    playMusic(); // 触发播放
 
     intro.classList.add("opened");
 
@@ -2050,7 +2053,6 @@
     }, T_HIDE);
   }
 
-  // 绑定点击事件
   intro.addEventListener("click", openLetter);
   intro.addEventListener("touchstart", function (e) {
     e.preventDefault();
