@@ -684,30 +684,41 @@
     filter: grayscale(.5) contrast(1.05) drop-shadow(0 4px 8px rgba(0,0,0,.5));
   }
 
-  /* 照片墙容器 - 增加高度，确保不重叠 */
+  /* ====== 彻底重构：抛弃绝对定位，采用流式 Flex 布局 ====== */
   .style-hanging-wrap {
     position: relative;
     width: 100%;
-    height: 400px;
-    margin: 10px 0 30px 0;
-    perspective: 800px;
+    /* 绝对不要写死高度 */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin: 20px 0 30px 0;
   }
 
+  .hanging-row {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4%;
+  }
+
+  /* 绳子现在绝对定位在这一排的背后 */
   .dark-rope {
     position: absolute;
-    left: -5%; width: 110%; height: 50px;
+    top: -5px; left: -5%; width: 110%; height: 50px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
   }
-  .rope-top { top: 0; }
-  .rope-bottom { top: 190px; }
 
+  /* 卡片包裹层：相对定位，不脱离文档流 */
   .hang-item-wrap {
-    position: absolute;
+    position: relative;
     display: flex; flex-direction: column; align-items: center;
     cursor: pointer;
     transform-origin: top center;
     transform: rotate(var(--angle));
+    /* 错落感用 margin-top 控制 */
+    margin-top: var(--mt, 0);
     z-index: 2;
     animation: miniBreeze 5s ease-in-out infinite alternate;
   }
@@ -729,13 +740,14 @@
     100% { transform: rotate(var(--angle)); }
   }
 
-  .top-1   { left: 6%; top: 10px;  --angle: -6deg; }
-  .top-2   { left: 38%; top: 25px; --angle: 3deg; }
-  .top-3   { right: 6%; top: 10px; --angle: 8deg; }
-  
-  .bot-1   { left: 6%; top: 205px;  --angle: -3deg; }
-  .bot-2   { left: 38%; top: 215px; --angle: 6deg; }
-  .bot-3   { right: 6%; top: 205px; --angle: -5deg; }
+  /* 设置错落角度和高度 */
+  .top-1 { --angle: -5deg; --mt: 0px; }
+  .top-2 { --angle: 2deg;  --mt: 25px; }
+  .top-3 { --angle: 6deg;  --mt: 5px; }
+
+  .bot-1 { --angle: -3deg; --mt: 0px; }
+  .bot-2 { --angle: 4deg;  --mt: 15px; }
+  .bot-3 { --angle: -4deg; --mt: 5px; }
 
   .dark-clip {
     width: 20px; height: 34px;
@@ -997,25 +1009,28 @@
     font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
   }
 
-  /* 拍立得容器增加高度 */
+  /* ====== 彻底重构：抛弃绝对定位，采用流式 Flex 布局 ====== */
   .end-collage {
-    position: relative; 
-    height: clamp(280px, 40vh, 360px); 
-    margin: clamp(16px, 2.6vh, 24px) 0; 
-    perspective: 900px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* 底部对齐，方便错落 */
+    padding: 20px 0;
+    margin: clamp(16px, 2.6vh, 24px) 0;
+    position: relative;
+    /* 移除高度限制 */
   }
   
   .end-photo {
-    position: absolute; 
+    position: relative; /* 回归文档流 */
     padding: 6px 6px 26px; 
     background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
     box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
     cursor: pointer;
-    /* 移除固定高度百分比 */
+    border: 1px solid rgba(0,0,0,0.1);
   }
   
-  /* 强制照片为正方形，取消变形 */
+  /* 强制正方形，绝对不压扁 */
   .end-photo img { 
     width: 100%; 
     aspect-ratio: 1 / 1; 
@@ -1028,11 +1043,29 @@
     font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
   }
   
-  /* 去掉高度限制 */
-  .end-photo--main { width: 50%; left: 6%; top: 7%; transform: rotate(-7deg); z-index: 3; }
+  /* 利用 margin 和 transform 做叠放错落，不再使用绝对定位 */
+  .end-photo--main { 
+    width: 52%; 
+    transform: rotate(-7deg); 
+    z-index: 3;
+  }
   .end-photo--main img { object-position: 50% 40%; }
-  .end-photo--top { width: 34%; right: 6%; top: 0; transform: rotate(6deg); z-index: 2; }
-  .end-photo--bottom { width: 39%; right: 8%; bottom: 1%; transform: rotate(-2deg); z-index: 4; }
+  
+  .end-photo--top { 
+    width: 36%; 
+    margin-left: -12%; /* 往左靠，叠在板评上 */
+    margin-bottom: 50px; /* 往上错落 */
+    transform: rotate(6deg); 
+    z-index: 2;
+  }
+  
+  .end-photo--bottom { 
+    width: 40%; 
+    margin-left: -12%; /* 继续往左靠 */
+    margin-bottom: 10px;
+    transform: rotate(-2deg); 
+    z-index: 4;
+  }
   
   .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
   .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
@@ -1050,7 +1083,7 @@
     pointer-events: none;
   }
 
-  .end-copy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+  .end-copy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; position: relative; z-index: 10; }
   
   .end-copy .micro { font-size: 6px; margin-bottom: 6px; display: block; color: var(--ink-mute); }
   .end-title {
@@ -1284,11 +1317,8 @@
     .word { font-size: 10px; line-height: 1.6; }
     
     .dark-rope { height: 45px; }
-    .top-1 { left: 2%; } .top-2 { left: 35%; } .top-3 { right: 2%; }
-    .bot-1 { left: 2%; } .bot-2 { left: 35%; } .bot-3 { right: 2%; }
   }
 
-  /* 在矮屏幕上，进一步确保容器足够高 */
   @media (max-height: 760px) {
     .profile-hero { height: min(38vh, 300px); min-height: 200px; }
     .profile-body { margin-top: -56px; }
@@ -1297,10 +1327,6 @@
     .accordion-text { font-size: 10px; line-height: 1.6; }
     .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
     .chat-display { height: 120px; }
-    
-    .style-hanging-wrap { height: 380px; margin-bottom: 20px; }
-    .rope-bottom { top: 180px; }
-    .bot-1 { top: 195px; } .bot-2 { top: 205px; } .bot-3 { top: 195px; }
     .player { margin-top: 10px; }
   }
 
@@ -1308,16 +1334,11 @@
     .profile-hero { height: 32vh; min-height: 170px; }
     .profile-body { margin-top: -48px; }
     .accordion-text { font-size: 9.2px; line-height: 1.5; }
-    .end-collage { height: 240px; margin: 12px 0; }
     .notice-sticker { width: min(58%, 160px); padding: 14px 12px; }
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
     .message-wrap { margin-top: 20px; }
     .chat-display { height: 100px; }
-    
-    .style-hanging-wrap { height: 360px; margin-bottom: 15px; }
-    .rope-bottom { top: 170px; }
-    .bot-1 { top: 185px; } .bot-2 { top: 195px; } .bot-3 { top: 185px; }
     .player { margin-top: 8px; }
   }
 
@@ -1491,109 +1512,112 @@
           <img class="stamp-mini" src="images/youpiao.webp" alt="" aria-hidden="true">
         </div>
 
+        <!-- 重构后的流式排版 -->
         <div class="style-hanging-wrap reveal" style="--d:.1s">
           
-          <svg class="dark-rope rope-top" viewBox="0 0 300 40" preserveAspectRatio="none">
-            <path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-          </svg>
-
-          <div class="hang-item-wrap top-1" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
+          <div class="hanging-row">
+            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none">
+              <path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
             </svg>
-            <div class="plain-card text-card--dark">
-              <div class="card-label">主风格</div>
-              <div class="word">日常高恋</div>
-              <div class="word">暧昧调情</div>
+            <div class="hang-item-wrap top-1" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--dark">
+                <div class="card-label">主风格</div>
+                <div class="word">日常高恋</div>
+                <div class="word">暧昧调情</div>
+              </div>
+            </div>
+
+            <div class="hang-item-wrap top-2" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--dark">
+                <div class="card-label">主风格</div>
+                <div class="word">微文艺</div>
+                <div class="word">真诚直球</div>
+              </div>
+            </div>
+
+            <div class="hang-item-wrap top-3" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--dark">
+                <div class="card-label">主风格</div>
+                <div class="word">微擦高擦</div>
+                <div class="word">动描</div>
+              </div>
             </div>
           </div>
 
-          <div class="hang-item-wrap top-2" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
+          <div class="hanging-row">
+            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none">
+              <path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
             </svg>
-            <div class="plain-card text-card--dark">
-              <div class="card-label">主风格</div>
-              <div class="word">微文艺</div>
-              <div class="word">真诚直球</div>
+            <div class="hang-item-wrap bot-1" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--pink">
+                <div class="card-label">副风格</div>
+                <div class="word">热脸贱</div>
+                <div class="word">姐感</div>
+              </div>
             </div>
-          </div>
 
-          <div class="hang-item-wrap top-3" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
-            </svg>
-            <div class="plain-card text-card--dark">
-              <div class="card-label">主风格</div>
-              <div class="word">微擦高擦</div>
-              <div class="word">动描</div>
+            <div class="hang-item-wrap bot-2" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--pink">
+                <div class="card-label">副风格</div>
+                <div class="word">年上</div>
+                <div class="word">狗妹</div>
+              </div>
             </div>
-          </div>
 
-          <svg class="dark-rope rope-bottom" viewBox="0 0 300 40" preserveAspectRatio="none">
-            <path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-          </svg>
-
-          <div class="hang-item-wrap bot-1" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
-            </svg>
-            <div class="plain-card text-card--pink">
-              <div class="card-label">副风格</div>
-              <div class="word">热脸贱</div>
-              <div class="word">姐感</div>
-            </div>
-          </div>
-
-          <div class="hang-item-wrap bot-2" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
-            </svg>
-            <div class="plain-card text-card--pink">
-              <div class="card-label">副风格</div>
-              <div class="word">年上</div>
-              <div class="word">狗妹</div>
-            </div>
-          </div>
-
-          <div class="hang-item-wrap bot-3" onclick="swing(this)">
-            <svg class="dark-clip" viewBox="0 0 24 40">
-              <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
-              <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
-              <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
-              <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
-              <rect x="2" y="18" width="20" height="2" fill="#111" />
-              <circle cx="12" cy="19" r="3" fill="#000" />
-            </svg>
-            <div class="plain-card text-card--pink">
-              <div class="card-label">副风格</div>
-              <div class="word">狗姐</div>
-              <div class="word">恶趣</div>
+            <div class="hang-item-wrap bot-3" onclick="swing(this)">
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="#333" />
+                <rect x="6" y="12" width="12" height="21" rx="1" fill="#555" />
+                <path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" />
+                <path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#888" opacity="0.4" />
+                <rect x="2" y="18" width="20" height="2" fill="#111" />
+                <circle cx="12" cy="19" r="3" fill="#000" />
+              </svg>
+              <div class="plain-card text-card--pink">
+                <div class="card-label">副风格</div>
+                <div class="word">狗姐</div>
+                <div class="word">恶趣</div>
+              </div>
             </div>
           </div>
 
@@ -1717,8 +1741,8 @@
       <div class="page__scroll">
         <p class="end__fr reveal" style="--d:.12s">Continuez à chercher la résonance du bonheur.</p>
 
+        <!-- 重构后的流式排版，移除绝对定位 -->
         <div class="end-collage reveal" style="--d:.2s">
-          <!-- 板评链接 -->
           <a href="https://www.kdocs.cn/l/chZcJl09zyxU" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
             <figure class="end-photo end-photo--main">
               <img src="images/image5.webp" alt="板评配图">
@@ -1726,14 +1750,12 @@
               <span class="end-tape" aria-hidden="true"></span>
             </figure>
           </a>
-          <!-- 话术链接 -->
           <a href="https://www.kdocs.cn/l/cnnbkx73rZFF" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
             <figure class="end-photo end-photo--top">
               <img src="images/image8.webp" alt="抽象花卉">
               <figcaption>话术</figcaption>
             </figure>
           </a>
-          <!-- 小卡链接 -->
           <a href="https://www.kdocs.cn/l/copvPonwv88t" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
             <figure class="end-photo end-photo--bottom">
               <img src="images/image12.webp" alt="雾粉枝叶">
