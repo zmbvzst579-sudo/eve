@@ -481,15 +481,15 @@
     100% { opacity: 1; }
   }
 
-  /* ====== 核心修复：页脚永远跟在内容下方 ====== */
   .page-foot {
     position: relative;
-    margin-top: 60px; /* 改用固定间距，彻底抛弃 auto，让它跟在内容最末尾 */
+    margin-top: 40px;
     padding: 0 var(--pad-x) var(--foot-bottom);
     z-index: 4; display: flex; align-items: center; gap: 10px;
     font-family: var(--sans); font-size: 8px; letter-spacing: .28em;
     color: var(--ink-mute); text-transform: uppercase; pointer-events: none;
     width: 100%;
+    flex-shrink: 0;
   }
   .page-foot b { font-weight: 500; color: rgba(240,232,230,.9); letter-spacing: .14em; }
   .page-foot i { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(219,168,180,.3), transparent); }
@@ -685,7 +685,6 @@
     filter: grayscale(.5) contrast(1.05) drop-shadow(0 4px 8px rgba(0,0,0,.5));
   }
 
-  /* ====== 绝对安全的网格布局 ====== */
   .style-hanging-wrap {
     display: flex;
     flex-direction: column;
@@ -970,9 +969,11 @@
      PAGE 4 — 尾声 + 聊天留言
   ============================================================ */
   .page-end { background: #090708; overflow: hidden; }
+  
   .page-end .page__scroll {
-    padding: var(--top-pad) var(--pad-x) 0;
+    padding: var(--top-pad) var(--pad-x) 80px var(--pad-x);
   }
+  
   .end__bg {
     position: absolute; inset: -5%; z-index: 0;
     background:
@@ -995,24 +996,64 @@
   }
 
   .end__fr {
-    margin-top: 4px; padding-left: 13px; border-left: 1px solid var(--pink-line);
+    margin-top: 0;
     font-family: var(--latin); font-style: italic;
     font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
+    padding-left: 10px;
+    border-left: 1px solid var(--pink-line);
+    margin-bottom: 20px;
   }
 
-  /* ====== 完美还原截图比例与重叠效果 ====== */
+  /* ====== 流式 Grid 布局：彻底杜绝重叠，且可以微调错位 ====== */
   .end-collage {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 15px 10px;
+    margin: 15px 0 30px 0;
     position: relative;
     width: 100%;
-    height: 350px; 
-    margin: clamp(16px, 2.6vh, 24px) 0 30px 0;
   }
-  
+
+  .end-collage > a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    width: 100%;
+  }
+
+  /* 1. 板评 - 占据左侧一整列（已按要求往下放） */
+  .end-collage > a:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    transform: rotate(-5deg) translate(5px, 30px); /* 这里增加 Y 轴偏移量 */
+    z-index: 1;
+  }
+
+  /* 2. 话术 - 占据右上 */
+  .end-collage > a:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    transform: rotate(4deg) translateY(5px);
+    z-index: 2;
+  }
+
+  /* 3. 小卡 - 占据右下 */
+  .end-collage > a:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+    transform: rotate(-3deg) translateX(-10px);
+    z-index: 3;
+  }
+
   .end-photo {
-    position: absolute; 
-    padding: 6px 6px 26px; 
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 5px 5px 24px; 
     background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
-    box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
+    box-shadow: 0 10px 20px rgba(0,0,0,.5), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
     cursor: pointer;
   }
@@ -1022,35 +1063,18 @@
     aspect-ratio: 1 / 1; 
     object-fit: cover; 
     filter: grayscale(.38) sepia(.1) contrast(1.06) brightness(.9); 
+    display: block;
   }
   
   .end-photo figcaption {
-    position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
-    font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
+    position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;
+    font-family: var(--serif); font-size: 10px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
   }
-  
-  .end-photo--main { 
-    width: 52%; left: 4%; top: 8%; 
-    transform: rotate(-6deg); 
-    z-index: 2;
+
+  .end-collage > a:hover .end-photo {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,.7);
   }
-  .end-photo--main img { object-position: 50% 40%; }
-  
-  .end-photo--top { 
-    width: 36%; right: 4%; top: -4%;
-    transform: rotate(4deg); 
-    z-index: 1;
-  }
-  
-  .end-photo--bottom { 
-    width: 40%; right: 8%; bottom: 2%;
-    transform: rotate(-4deg); 
-    z-index: 3; 
-  }
-  
-  .end-collage:hover .end-photo--main { transform: rotate(-3deg) translateY(-3px); z-index: 10; }
-  .end-collage:hover .end-photo--top { transform: rotate(2deg) translateY(-3px); z-index: 10; }
-  .end-collage:hover .end-photo--bottom { transform: rotate(-1deg) translateY(-3px); z-index: 10; }
 
   .end-tape {
     position: absolute; z-index: 8;
@@ -1064,18 +1088,24 @@
     pointer-events: none;
   }
 
-  .end-copy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; position: relative; z-index: 10; }
+  .end-copy { 
+    display: flex; flex-direction: column; align-items: flex-end; text-align: right; 
+    position: relative; z-index: 10; 
+    margin-top: 10px;
+    width: 100%;
+  }
   
   .end-copy .micro { font-size: 6px; margin-bottom: 6px; display: block; color: var(--ink-mute); }
   .end-title {
     font-family: var(--serif); font-weight: 300;
     font-size: clamp(14px, 4vw, 18px); line-height: 1.7; letter-spacing: .05em;
-    color: #eee3e3; white-space: nowrap; text-shadow: 0 4px 30px rgba(0,0,0,.7);
+    color: #eee3e3; text-shadow: 0 4px 30px rgba(0,0,0,.7);
+    word-break: keep-all;
   }
   .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; text-shadow: 0 0 30px rgba(217,143,160,.12); }
 
   .message-wrap {
-    margin-top: clamp(20px, 4vh, 30px);
+    margin-top: 30px;
   }
   .chat-display {
     height: 110px;
@@ -1171,7 +1201,7 @@
   }
 
   .end__fin {
-    margin-top: 26px; padding-top: 18px;
+    margin-top: 30px;
     font-family: var(--sans); font-size: 6px; letter-spacing: .35em; color: var(--ink-faint);
   }
 
@@ -1281,7 +1311,7 @@
     .pager { right: 10px; padding: 4px 6px 4px 11px; }
     .pager__brand { font-size: 14px; }
     .dot { width: 14px; }
-    .end-photo figcaption { font-size: 8.5px; letter-spacing: .18em; }
+    .end-photo figcaption { font-size: 8px; letter-spacing: .18em; }
     .profile-extra { font-size: 10px; }
     .profile-meta { font-size: 11px; gap: 8px; }
     .notice-sticker { width: min(60%, 170px); padding: 16px 14px; margin-left: auto;}
@@ -1305,9 +1335,8 @@
     .notice__title { padding-bottom: 10px; font-size: clamp(19px, 5.2vw, 22px); }
     .accordion-text { font-size: 10px; line-height: 1.6; }
     .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
-    .chat-display { height: 120px; }
+    .chat-display { height: 100px; }
     .player { margin-top: 10px; }
-    .end-collage { height: 310px; margin-bottom: 20px; }
   }
 
   @media (max-height: 660px) {
@@ -1318,9 +1347,8 @@
     .notice-sticker .fr { font-size: 9px; }
     .notice-sticker .cn { font-size: 10px; }
     .message-wrap { margin-top: 20px; }
-    .chat-display { height: 100px; }
+    .chat-display { height: 90px; }
     .player { margin-top: 8px; }
-    .end-collage { height: 270px; margin-bottom: 15px; }
   }
 
   @media (min-width: 610px) {
@@ -1346,7 +1374,9 @@
 </head>
 <body>
 
-<!-- ⚠️ 这里填入你刚刚拿到的 jsonbin 数据 -->
+<!-- 音乐标签，请务必确保 images 文件夹下有 bgm.mp3 文件 -->
+<audio id="bgm" src="images/bgm.mp3" loop></audio>
+
 <script>
   const CONFIG = {
     BIN_ID: '6adde254ffd5d160538a3354', 
@@ -1471,7 +1501,6 @@
           <p class="profile-footer-cn">冬天周而复始，<br>该相逢的人会再相逢。</p>
         </div>
 
-        <!-- 页脚放在这里，跟在内容后面 -->
         <footer class="page-foot reveal" style="--d:.52s">
           <span>LETTER <b>01</b></span>
           <i aria-hidden="true"></i>
@@ -1604,11 +1633,12 @@
 
         </div>
 
+        <!-- 歌名和歌手已修改 -->
         <div class="player" id="player">
           <div class="player__disc" aria-hidden="true"></div>
           <div class="player__meta">
-            <span class="player__title">Lettre à la cinquième saison</span>
-            <span class="player__sub">eve · 05</span>
+            <span class="player__title">lovit</span>
+            <span class="player__sub">peggy</span>
             <div class="player__track"><i id="playerBar"></i></div>
           </div>
           <button class="player__btn" id="playerBtn" type="button" aria-label="播放">
@@ -1621,7 +1651,6 @@
           <p>爱像春天一样缓慢。</p>
         </div>
 
-        <!-- 页脚放在这里 -->
         <footer class="page-foot reveal" style="--d:.44s">
           <span>LETTER <b>02</b></span>
           <i aria-hidden="true"></i>
@@ -1705,7 +1734,6 @@
           </div>
         </div>
 
-        <!-- 页脚放在这里，展开须知后会自动被推下去 -->
         <footer class="page-foot reveal" style="--d:.14s">
           <span>LETTER <b>03</b></span>
           <i aria-hidden="true"></i>
@@ -1725,21 +1753,21 @@
         <p class="end__fr reveal" style="--d:.12s">Continuez à chercher la résonance du bonheur.</p>
 
         <div class="end-collage reveal" style="--d:.2s">
-          <a href="https://www.kdocs.cn/l/chZcJl09zyxU" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-            <figure class="end-photo end-photo--main">
+          <a href="https://www.kdocs.cn/l/chZcJl09zyxU" target="_blank" rel="noopener">
+            <figure class="end-photo">
               <img src="images/image5.webp" alt="板评配图">
               <figcaption>板评</figcaption>
               <span class="end-tape" aria-hidden="true"></span>
             </figure>
           </a>
-          <a href="https://www.kdocs.cn/l/cnnbkx73rZFF" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-            <figure class="end-photo end-photo--top">
+          <a href="https://www.kdocs.cn/l/cnnbkx73rZFF" target="_blank" rel="noopener">
+            <figure class="end-photo">
               <img src="images/image8.webp" alt="抽象花卉">
               <figcaption>话术</figcaption>
             </figure>
           </a>
-          <a href="https://www.kdocs.cn/l/copvPonwv88t" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-            <figure class="end-photo end-photo--bottom">
+          <a href="https://www.kdocs.cn/l/copvPonwv88t" target="_blank" rel="noopener">
+            <figure class="end-photo">
               <img src="images/image12.webp" alt="雾粉枝叶">
               <figcaption>小卡</figcaption>
             </figure>
@@ -1766,7 +1794,7 @@
           <p class="message-hint" id="messageHint">轻触寄出</p>
         </div>
 
-        <p class="end__fin">FIN · 04</p>
+        <p class="end__fin reveal" style="--d:.45s">FIN · 04</p>
 
         <footer class="page-foot reveal" style="--d:.48s">
           <span>LETTER <b>04</b></span>
@@ -1819,6 +1847,7 @@
   var adminClose = document.getElementById("adminClose");
 
   var confirmedImg = document.querySelector(".confirmed-img");
+  var bgm = document.getElementById("bgm"); // 获取音频标签
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.innerWidth < 760;
@@ -1840,12 +1869,6 @@
   /* ==========================================================
      背景音乐逻辑
      ========================================================== */
-  var bgm = new Audio();
-  bgm.loop = true;
-  bgm.preload = 'auto';
-  // ⚠️ 已经彻底绑定本地路径
-  bgm.src = 'images/bgm.mp3';
-
   function setMusicUI(on){
     if (player) player.classList.toggle("is-playing", !!on);
     if (playerBtn) {
@@ -1855,28 +1878,34 @@
   }
 
   function playMusic(){
+    if (!bgm) return;
     var p = bgm.play();
     if (p && p.then){
       p.then(function(){ setMusicUI(true); })
-       .catch(function(){ setMusicUI(false); });
+       .catch(function(err){ 
+         setMusicUI(false); 
+         console.log("播放失败，请检查 images/bgm.mp3 是否存在或浏览器限制:", err);
+       });
     } else {
       setMusicUI(true);
     }
   }
 
   function toggleMusic(){
+    if (!bgm) return;
     if (bgm.paused) playMusic();
     else { bgm.pause(); setMusicUI(false); }
   }
 
-  bgm.addEventListener('play',  function(){ setMusicUI(true);  });
-  bgm.addEventListener('pause', function(){ setMusicUI(false); });
-
-  bgm.addEventListener("timeupdate", function () {
-    if (bgm.duration && playerBar) {
-      playerBar.style.width = (bgm.currentTime / bgm.duration * 100) + "%";
-    }
-  });
+  if (bgm) {
+    bgm.addEventListener('play',  function(){ setMusicUI(true);  });
+    bgm.addEventListener('pause', function(){ setMusicUI(false); });
+    bgm.addEventListener("timeupdate", function () {
+      if (bgm.duration && playerBar) {
+        playerBar.style.width = (bgm.currentTime / bgm.duration * 100) + "%";
+      }
+    });
+  }
 
   if (playerBtn){
     playerBtn.addEventListener('click', function(){
@@ -1997,8 +2026,11 @@
     if (opened) return;
     opened = true;
 
+    // --- 核心：点击瞬间直接调用播放，绕过浏览器拦截 ---
+    playMusic();
+    // ------------------------------------------------
+
     intro.classList.add("opened");
-    playMusic(); // 点击开屏，播放音乐！
 
     window.setTimeout(function () {
       intro.classList.add("gone");
@@ -2018,6 +2050,7 @@
     }, T_HIDE);
   }
 
+  // 绑定点击事件
   intro.addEventListener("click", openLetter);
   intro.addEventListener("touchstart", function (e) {
     e.preventDefault();
