@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050506">
 <title>eve</title>
+
+<!-- 预加载首屏最关键的几张图，确保秒开不闪烁 -->
+<link rel="preload" as="image" href="images/naopiqi.webp">
+<link rel="preload" as="image" href="images/huoqiyin.webp">
+<link rel="preload" as="image" href="images/image1.webp">
+
 <style>
+  /* 字体渲染优化 */
+  @font-face { font-family: 'Noto Serif SC'; font-display: swap; src: local('Noto Serif SC'); }
+  @font-face { font-family: 'Cormorant Garamond'; font-display: swap; src: local('Cormorant Garamond'); }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -340,13 +350,13 @@
   }
   .stage.is-ready { opacity: 1; visibility: visible; transform: scale(1); }
 
+  /* 删除背景图，改由 JS 延迟注入 */
   .stage-bg {
     position: absolute; inset: 0; z-index: 0;
     pointer-events: none;
     background:
       radial-gradient(ellipse at 74% 6%, rgba(255,255,255,.05), transparent 46%),
       radial-gradient(ellipse at 12% 94%, rgba(255,255,255,.03), transparent 52%),
-      url("images/image9.webp") center / cover no-repeat,
       #070608;
     filter: blur(12px) grayscale(.7) brightness(.5) contrast(1.05);
     transform: scale(1.18);
@@ -354,6 +364,12 @@
     transition: opacity 1.4s var(--ease-soft) .3s;
   }
   .stage.is-ready .stage-bg { opacity: .9; }
+  .stage-bg.loaded {
+    background: radial-gradient(ellipse at 74% 6%, rgba(255,255,255,.05), transparent 46%),
+                radial-gradient(ellipse at 12% 94%, rgba(255,255,255,.03), transparent 52%),
+                url("images/image9.webp") center / cover no-repeat,
+                #070608;
+  }
 
   .petal-field {
     position: absolute; inset: 0; z-index: 53;
@@ -483,7 +499,7 @@
 
   .page-foot {
     position: relative;
-    margin-top: 20px; /* 减小间距，让整体更紧凑 */
+    margin-top: 20px; 
     padding: 0 var(--pad-x) var(--foot-bottom);
     z-index: 4; display: flex; align-items: center; gap: 10px;
     font-family: var(--sans); font-size: 8px; letter-spacing: .28em;
@@ -633,13 +649,17 @@
   .page-style .page__scroll {
     padding: var(--top-pad) var(--pad-x) 0;
   }
+  /* 延迟注入背景图 */
   .page-style::before {
     content: ""; position: absolute; inset: -6%; z-index: -2;
     pointer-events: none;
-    background: url("images/image5.webp") center / cover no-repeat;
+    background: transparent;
     opacity: .9;
     filter: blur(4px) brightness(.6) saturate(1.08) contrast(1.03);
     transform: scale(1.06);
+  }
+  .page-style.loaded::before {
+    background: url("images/image5.webp") center / cover no-repeat;
   }
   .page-style::after {
     content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -654,7 +674,6 @@
     text-shadow: 0 1px 6px rgba(0,0,0,.5);
   }
 
-  /* 修复：加入 min-height 兜底，彻底杜绝部分手机不认 aspect-ratio 导致高度为 0 */
   .style-photo {
     position: relative; 
     width: 100%;
@@ -667,6 +686,7 @@
     border: 1px solid rgba(255,255,255,0.06);
     opacity: 0; transform: translateY(20px);
     transition: opacity .8s var(--ease), transform .8s var(--ease-soft);
+    background: #111;
   }
   .page.is-active .style-photo { opacity: 1; transform: translateY(0); transition-delay: .1s; }
 
@@ -844,10 +864,14 @@
      PAGE 3 — 下单须知
   ============================================================ */
   .page-notice { background: #070608; }
+  /* 延迟注入背景 */
   .page-notice::before {
     content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
-    background: url("images/image6.webp") center / cover no-repeat;
+    background: transparent;
     opacity: .9; filter: blur(2px) grayscale(.3) brightness(.72) contrast(1.05);
+  }
+  .page-notice.loaded::before {
+    background: url("images/image6.webp") center / cover no-repeat;
   }
   .page-notice::after {
     content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -973,21 +997,25 @@
      PAGE 4 — 尾声 + 聊天留言
   ============================================================ */
   .page-end { background: #090708; overflow: hidden; }
-  
   .page-end .page__scroll {
     padding: var(--top-pad) var(--pad-x) 60px var(--pad-x);
   }
   
+  /* 延迟注入背景图 */
   .end__bg {
     position: absolute; inset: -5%; z-index: 0;
+    background: #090708;
+    filter: blur(4px) grayscale(.5) brightness(.6) contrast(1.06);
+    transform: scale(1.09);
+    opacity: 0;
+    animation: endBgDrift 28s ease-in-out infinite alternate;
+  }
+  .page-end.loaded .end__bg {
     background:
       linear-gradient(90deg, rgba(7,6,7,.85), transparent 38%, transparent 71%, rgba(7,6,7,.7)),
       linear-gradient(180deg, rgba(7,6,7,.42), transparent 26%, rgba(7,6,7,.9) 100%),
       url("images/image3.webp") center / cover no-repeat;
-    filter: blur(4px) grayscale(.5) brightness(.6) contrast(1.06);
-    transform: scale(1.09);
     opacity: .62;
-    animation: endBgDrift 28s ease-in-out infinite alternate;
   }
   @keyframes endBgDrift {
     from { transform: scale(1.09) translate3d(-.8%, -.6%, 0); }
@@ -1008,16 +1036,16 @@
     margin-bottom: 15px;
   }
 
-  /* 修复：将卡片整体宽度缩小，并居中，解决挤占输入框问题 */
+  /* 板评卡变大：修改网格比例和整体宽度 */
   .end-collage {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.3fr 1fr; /* 左侧列更宽 */
     grid-template-rows: auto auto;
     gap: 8px;
     margin: 10px auto 15px auto;
     position: relative;
-    width: 85%;
-    max-width: 320px;
+    width: 92%; /* 整体从 85% 放大到 92% */
+    max-width: 360px; /* 增加最大宽度限制 */
   }
 
   .end-collage > a {
@@ -1028,7 +1056,7 @@
     width: 100%;
   }
 
-  /* 板评（左侧大图），往下挪，保持网格特性不重叠 */
+  /* 板评（左侧大图），居中对齐，下移 */
   .end-collage > a:nth-child(1) {
     grid-column: 1;
     grid-row: 1 / 3;
@@ -1111,7 +1139,7 @@
   .end-title em { font-style: normal; color: var(--pink); letter-spacing: .08em; text-shadow: 0 0 30px rgba(217,143,160,.12); }
 
   .message-wrap {
-    margin-top: 15px; /* 上移输入框 */
+    margin-top: 15px; 
   }
   .chat-display {
     height: 80px; 
@@ -1379,8 +1407,8 @@
 </head>
 <body>
 
-<!-- 音乐标签：添加了 playsinline 解决移动端播放问题 -->
-<audio id="bgm" src="images/bgm.mp3" loop playsinline webkit-playsinline></audio>
+<!-- 音乐：preload="none" 延迟下载 -->
+<audio id="bgm" src="images/bgm.mp3" loop playsinline webkit-playsinline preload="none"></audio>
 
 <script>
   const CONFIG = {
@@ -1524,8 +1552,9 @@
         </div>
 
         <div class="style-photo reveal" style="--d:.08s">
-          <img src="images/image4.webp" alt="雾粉色百合" decoding="async">
-          <img class="stamp-mini" src="images/youpiao.webp" alt="" aria-hidden="true">
+          <!-- 添加 loading="lazy" 实现懒加载 -->
+          <img src="images/image4.webp" alt="雾粉色百合" loading="lazy" decoding="async">
+          <img class="stamp-mini" src="images/youpiao.webp" alt="" loading="lazy" aria-hidden="true">
         </div>
 
         <div class="style-hanging-wrap reveal" style="--d:.1s">
@@ -1726,7 +1755,7 @@
                   <p>6. 婉拒17-，如果发现隐瞒或者披马甲将永拒。</p>
                   <p>7. 婉拒把我们的约会内容录屏，截图，<br>以及直播传播给他人。</p>
                   <p>8. 我是“回合制”选手，请恋人安静听我讲完话，<br>为了你的体验，尽量不要打断我讲话。</p>
-                  <p>9. 婉拒低无 / 低恋选手，谢谢配合。<img class="confirmed-img" src="images/confirmed.webp" alt="Confirmed"></p>
+                  <p>9. 婉拒低无 / 低恋选手，谢谢配合。<img class="confirmed-img" src="images/confirmed.webp" alt="Confirmed" loading="lazy"></p>
                 </div>
               </div>
             </div>
@@ -1759,20 +1788,20 @@
         <div class="end-collage reveal" style="--d:.2s">
           <a href="https://www.kdocs.cn/l/chZcJl09zyxU" target="_blank" rel="noopener">
             <figure class="end-photo">
-              <img src="images/image5.webp" alt="板评配图">
+              <img src="images/image5.webp" alt="板评配图" loading="lazy">
               <figcaption>板评</figcaption>
               <span class="end-tape" aria-hidden="true"></span>
             </figure>
           </a>
           <a href="https://www.kdocs.cn/l/cnnbkx73rZFF" target="_blank" rel="noopener">
             <figure class="end-photo">
-              <img src="images/image8.webp" alt="抽象花卉">
+              <img src="images/image8.webp" alt="抽象花卉" loading="lazy">
               <figcaption>话术</figcaption>
             </figure>
           </a>
           <a href="https://www.kdocs.cn/l/copvPonwv88t" target="_blank" rel="noopener">
             <figure class="end-photo">
-              <img src="images/image12.webp" alt="雾粉枝叶">
+              <img src="images/image12.webp" alt="雾粉枝叶" loading="lazy">
               <figcaption>小卡</figcaption>
             </figure>
           </a>
@@ -1883,7 +1912,8 @@
 
   function playMusic(){
     if (!bgm) return;
-    bgm.load(); // 重置播放状态，防止浏览器卡死
+    if (bgm.readyState === 0) bgm.load(); 
+    
     var p = bgm.play();
     if (p && p.then){
       p.then(function(){ setMusicUI(true); })
@@ -1917,6 +1947,28 @@
       toggleMusic();
       if (navigator.vibrate) navigator.vibrate(8);
     });
+  }
+
+  /* ==========================================================
+     延迟加载背景图逻辑
+     ========================================================== */
+  // 当用户滑到某页时，才加载该页的背景图
+  function lazyLoadBackground(index) {
+    var page = pages[index];
+    if (!page) return;
+    var bgEl;
+    if (index === 0) {
+      bgEl = document.querySelector('.stage-bg');
+    } else if (index === 1) {
+      bgEl = page;
+    } else if (index === 2) {
+      bgEl = page;
+    } else if (index === 3) {
+      bgEl = page;
+    }
+    if (bgEl && !bgEl.classList.contains('loaded')) {
+      bgEl.classList.add('loaded');
+    }
   }
 
   /* ==========================================================
@@ -2014,6 +2066,7 @@
     if (scroller) scroller.scrollTop = 0;
 
     syncA11y();
+    lazyLoadBackground(current); // 触发当前页背景加载
   }
 
   function nextPage() {
