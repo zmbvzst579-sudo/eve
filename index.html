@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#050506">
 <title>eve</title>
 
-<!-- 补全了邮票的预加载，确保关键资源第一时间下载 -->
 <link rel="preload" as="image" href="images/naopiqi.webp" fetchpriority="high">
 <link rel="preload" as="image" href="images/huoqiyin.webp" fetchpriority="high">
 <link rel="preload" as="image" href="images/youpiao.webp" fetchpriority="high">
@@ -161,7 +160,6 @@
   }
   #intro.gone .intro-center { transform: translateY(-8px); opacity: 0; }
 
-  /* 修复信封与邮戳的拼凑感：初始隐藏，加载完毕后整体淡入 */
   .env-wrap {
     --ew: min(65vmin, 320px);
     --eh: calc(var(--ew) * .70);
@@ -319,7 +317,7 @@
     position: absolute; inset: 0;
     overflow-y: auto; overflow-x: hidden;
     scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-    background: transparent; padding-bottom: 20px;
+    background: transparent; 
     display: flex; flex-direction: column;
   }
   .page__scroll::-webkit-scrollbar { display: none; }
@@ -373,7 +371,7 @@
      PAGE 1 — 自我介绍
   ============================================================ */
   .page-profile { background: var(--void); }
-  .page-profile .page__scroll { padding: var(--top-pad) 0 0; }
+  .page-profile .page__scroll { padding: var(--top-pad) 0 20px; }
 
   .bg-eve { position: absolute; top: 5%; left: 10%; font-family: var(--latin); font-style: italic; font-size: 150px; line-height: 1; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06); transform: rotate(-15deg); pointer-events: none; z-index: 0; }
   .profile-header { padding: 0 var(--pad-x); margin-bottom: 22px; position: relative; z-index: 2; }
@@ -412,10 +410,11 @@
   .profile-footer-cn { font-size: 11.5px; line-height: 1.95; color: var(--ink-soft); letter-spacing: .05em; }
 
   /* ============================================================
-     PAGE 2 — 风格
+     PAGE 2 — 风格 (恢复清爽排版，加大底部留白)
   ============================================================ */
   .page-style { background: var(--void); }
-  .page-style .page__scroll { padding: var(--top-pad) var(--pad-x) 0; }
+  /* 增加底部 padding，确保能滑到最底 */
+  .page-style .page__scroll { padding: var(--top-pad) var(--pad-x) 50px; }
   
   .page-style-bg {
     position: absolute; inset: -6%; z-index: 0;
@@ -429,7 +428,7 @@
   .style-header { margin-bottom: 10px; position: relative; z-index: 2; }
   .style-fr { font-family: var(--latin); font-style: italic; font-size: clamp(10px, 2.8vw, 12px); line-height: 1.8; color: var(--ink-soft); letter-spacing: .02em; margin-top: 4px; max-width: 92%; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
-  .style-photo { position: relative; z-index: 2; width: 100%; aspect-ratio: 16 / 10; min-height: 150px; flex-shrink: 0; overflow: hidden; margin: 0 0 10px; box-shadow: 0 14px 30px rgba(0,0,0,.42); border: 1px solid rgba(255,255,255,0.1); opacity: 0; transform: translateY(20px); transition: opacity .8s var(--ease), transform .8s var(--ease-soft); background: #111; }
+  .style-photo { position: relative; z-index: 2; width: 100%; aspect-ratio: 16 / 10; min-height: 150px; flex-shrink: 0; overflow: hidden; margin: 0 0 24px; box-shadow: 0 14px 30px rgba(0,0,0,.42); border: 1px solid rgba(255,255,255,0.1); opacity: 0; transform: translateY(20px); transition: opacity .8s var(--ease), transform .8s var(--ease-soft); background: #111; }
   .page.is-active .style-photo { opacity: 1; transform: translateY(0); transition-delay: .1s; }
   .style-photo::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(8,8,10,.1), transparent 26%, transparent 74%, rgba(8,8,10,.1)), linear-gradient(180deg, transparent 44%, rgba(8,8,10,.2) 78%, rgba(8,8,10,.8) 100%); }
   .style-photo::after { content: ""; position: absolute; inset: 1px; z-index: 3; border: 1px solid rgba(235,230,228,.15); pointer-events: none; }
@@ -437,23 +436,33 @@
   
   .stamp-mini { position: absolute; right: 10px; bottom: 9px; z-index: 5; width: 32px; height: 42px; transform: rotate(8deg); opacity: .95; filter: drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
 
-  .style-hanging-wrap { display: flex; z-index: 2; position: relative; flex-direction: column; gap: 30px; margin: 20px 0 30px 0; }
+  .style-hanging-wrap { display: flex; z-index: 2; position: relative; flex-direction: column; gap: 45px; margin: 20px 0 35px 0; }
   .hanging-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; position: relative; align-items: start; }
-  .dark-rope { position: absolute; top: -10px; left: -5%; width: 110%; height: 50px; pointer-events: none; z-index: 0; }
+  .dark-rope { position: absolute; top: -10px; left: -5%; width: 110%; height: 50px; pointer-events: none; z-index: 0; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.6)); }
 
   .hang-item-wrap {
     position: relative; display: flex; flex-direction: column; align-items: center;
     cursor: pointer; z-index: 2; transform-origin: top center;
+    animation: microSway 6s ease-in-out infinite alternate;
+    animation-delay: var(--delay-anim, 0s);
   }
-  .hang-item-wrap.swinging { animation: miniSwing 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important; }
+  
+  .hang-item-wrap.swinging { 
+    animation: miniSwing 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important; 
+  }
 
-  .top-1 { transform: rotate(-6deg) translateY(0); --r: -6deg; --y: 0px; }
-  .top-2 { transform: rotate(3deg) translateY(15px); --r: 3deg; --y: 15px; }
-  .top-3 { transform: rotate(8deg) translateY(5px); --r: 8deg; --y: 5px; }
-  .bot-1 { transform: rotate(-3deg) translateY(0); --r: -3deg; --y: 0px; }
-  .bot-2 { transform: rotate(6deg) translateY(15px); --r: 6deg; --y: 15px; }
-  .bot-3 { transform: rotate(-5deg) translateY(5px); --r: -5deg; --y: 5px; }
+  .top-1 { transform: rotate(-6deg) translateY(0); --r: -6deg; --y: 0px; --delay-anim: 0s; }
+  .top-2 { transform: rotate(3deg) translateY(15px); --r: 3deg; --y: 15px; --delay-anim: 1.5s; }
+  .top-3 { transform: rotate(8deg) translateY(5px); --r: 8deg; --y: 5px; --delay-anim: 3s; }
+  
+  .bot-1 { transform: rotate(-3deg) translateY(0); --r: -3deg; --y: 0px; --delay-anim: 0.5s; }
+  .bot-2 { transform: rotate(6deg) translateY(15px); --r: 6deg; --y: 15px; --delay-anim: 2s; }
+  .bot-3 { transform: rotate(-5deg) translateY(5px); --r: -5deg; --y: 5px; --delay-anim: 3.5s; }
 
+  @keyframes microSway {
+    0% { transform: rotate(var(--r)) translateY(var(--y)); }
+    100% { transform: rotate(calc(var(--r) + 1.5deg)) translateY(calc(var(--y) - 3px)); }
+  }
   @keyframes miniSwing {
     0% { transform: rotate(var(--r)) translateY(var(--y)); }
     20% { transform: rotate(calc(var(--r) + 15deg)) translateY(var(--y)); }
@@ -463,21 +472,34 @@
     100% { transform: rotate(var(--r)) translateY(var(--y)); }
   }
 
-  .dark-clip { width: 20px; height: 34px; z-index: 3; margin-bottom: -10px; filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.6)); pointer-events: none; }
-  .plain-card { padding: 12px 8px; border-radius: 2px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.15); width: 100%; min-height: 115px; text-align: center; }
-  .card-label { font-size: 9px; letter-spacing: .15em; margin-bottom: 8px; opacity: 0.9; }
-  .word { font-family: var(--serif); font-size: 11px; font-weight: 400; letter-spacing: .05em; line-height: 1.8; margin-bottom: 4px; }
+  .dark-clip { width: 20px; height: 34px; z-index: 3; margin-bottom: -10px; pointer-events: none; }
+  
+  .plain-card { 
+    padding: 18px 10px; border-radius: 4px; 
+    box-shadow: 0 12px 28px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15); 
+    pointer-events: none; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%; min-height: 125px; text-align: center;
+  }
+  
+  /* 恢复清爽的文本标签，去掉了胶囊边框 */
+  .card-label { 
+    font-size: 9px; letter-spacing: 0.15em; 
+    margin-bottom: 8px; opacity: 0.8;
+  }
+  .word { font-family: var(--serif); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; line-height: 1.8; margin-bottom: 6px; }
   .word:last-child { margin-bottom: 0; }
 
-  .text-card--dark { background: rgba(25, 22, 28, 0.95); border-color: rgba(219, 168, 180, 0.25); }
+  .text-card--dark { background: linear-gradient(160deg, #1a181d 0%, #0d0c0e 100%); border-color: rgba(219, 168, 180, 0.2); }
   .text-card--dark .card-label { color: var(--dusty-rose); }
   .text-card--dark .word { color: #e0b0bc; }
   
-  .text-card--pink { background: linear-gradient(160deg, #faf5f6 0%, #ebdce0 100%); border-color: rgba(255, 255, 255, 0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  .text-card--pink { background: linear-gradient(160deg, #faf5f6 0%, #ebdce0 100%); border-color: rgba(255, 255, 255, 0.6); }
   .text-card--pink .card-label { color: rgba(185, 112, 127, 0.9); }
-  .text-card--pink .word { color: #121014; text-shadow: 0 1px 1px rgba(255,255,255,0.8), 0 -1px 1px rgba(0,0,0,0.1); }
+  .text-card--pink .word { color: #2a2224; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
 
-  .player { display: flex; z-index: 2; position: relative; align-items: center; gap: 16px; margin-top: 15px; padding: 12px 14px; border-radius: 0; border: 1px solid rgba(255, 255, 255, .15); background: rgba(25, 20, 24, .9); box-shadow: 0 10px 25px rgba(0, 0, 0, .4); opacity: 0; transform: translateY(20px); transition: opacity .8s var(--ease), transform .8s var(--ease-soft); }
+  .player { display: flex; z-index: 2; position: relative; align-items: center; gap: 16px; margin-top: 30px; padding: 12px 14px; border-radius: 0; border: 1px solid rgba(255, 255, 255, .15); background: rgba(25, 20, 24, .9); box-shadow: 0 10px 25px rgba(0, 0, 0, .4); opacity: 0; transform: translateY(20px); transition: opacity .8s var(--ease), transform .8s var(--ease-soft); }
   .page.is-active .player { opacity: 1; transform: translateY(0); transition-delay: .4s; }
   .player__disc { width: 36px; height: 36px; flex: 0 0 auto; border-radius: 50%; position: relative; background: conic-gradient(from 0deg, #2a1e24, #4a3038 25%, #2a1e24 50%, #4a3038 75%, #2a1e24); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
   .player__disc::after { content: ""; position: absolute; inset: 42%; border-radius: 50%; background: var(--pink); opacity: .8; }
@@ -502,7 +524,7 @@
   .style-footer p { font-size: 12px; line-height: 1.9; color: var(--ink-soft); letter-spacing: .04em; text-shadow: 0 1px 6px rgba(0,0,0,.55); }
 
   /* ============================================================
-     PAGE 3 — 下单须知
+     PAGE 3 — 下单须知 (加大底部留白)
   ============================================================ */
   .page-notice { background: #08080a; }
   
@@ -513,9 +535,9 @@
   .page-notice-bg.loaded { background: url("images/image6.webp") center / cover no-repeat; opacity: 1; }
   .page-notice::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(8,8,10,.3) 0%, rgba(8,8,10,.1) 40%, rgba(8,8,10,.5) 100%); }
   
-  .page-notice .page__scroll { padding: var(--top-pad) var(--pad-x) 8px; }
+  /* 增加底部 padding，确保能滑到最底 */
+  .page-notice .page__scroll { padding: var(--top-pad) var(--pad-x) 50px; }
 
-  /* 进一步提亮面板底色 */
   .notice-glass { position: relative; z-index: 2; padding: clamp(20px, 4.5vw, 26px) clamp(16px, 4vw, 22px); border-radius: 4px; border: 1px solid rgba(255, 255, 255, .2); background: rgba(28, 26, 30, 0.9); box-shadow: 0 15px 35px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .1); margin-bottom: 40px; }
   .notice__title { padding-bottom: 14px; border-bottom: 1px solid rgba(219, 168, 180, .3); font-family: var(--serif); font-weight: 300; font-size: clamp(20px, 5.4vw, 24px); line-height: 1.2; letter-spacing: .18em; color: var(--ink); margin-bottom: 10px; }
 
@@ -549,12 +571,11 @@
   .notice-sticker .cn { margin-top: 8px; font-family: var(--serif); font-weight: 600; font-size: 11.5px; line-height: 1.8; letter-spacing: .05em; color: #ffffff; text-shadow: 0 1px 6px rgba(0, 0, 0, .8); }
 
   /* ============================================================
-     PAGE 4 — 尾声 (大幅增强透白光)
+     PAGE 4 — 尾声
   ============================================================ */
   .page-end { background: #08080a; overflow: hidden; }
   .page-end .page__scroll { padding: var(--top-pad) var(--pad-x) 60px var(--pad-x); }
   
-  /* 加强中心透白光，手机屏幕也能看清 */
   .end__bg {
     position: absolute; inset: 0; z-index: 0;
     pointer-events: none;
@@ -664,9 +685,9 @@
     .player__title { font-size: 12px; }
     .confirmed-img { width: 100px; }
     .end-tape { width: 60px; left: -14px; top: -9px; }
-    .plain-card { min-height: 105px; padding: 10px 4px; }
+    .plain-card { min-height: 115px; padding: 14px 6px; }
     .card-label { font-size: 8px; margin-bottom: 6px; }
-    .word { font-size: 10px; line-height: 1.6; }
+    .word { font-size: 11px; line-height: 1.6; }
   }
 
   @media (max-height: 760px) {
@@ -676,7 +697,8 @@
     .accordion-text { font-size: 10px; line-height: 1.6; }
     .message-wrap { margin-top: 10px; }
     .chat-display { height: 70px; }
-    .player { margin-top: 10px; }
+    .player { margin-top: 20px; }
+    .style-hanging-wrap { gap: 30px; }
   }
 
   @media (max-height: 660px) {
@@ -688,7 +710,7 @@
     .notice-sticker .cn { font-size: 10px; }
     .message-wrap { margin-top: 10px; }
     .chat-display { height: 60px; }
-    .player { margin-top: 8px; }
+    .player { margin-top: 15px; }
   }
 
   @media (min-width: 610px) {
@@ -846,21 +868,30 @@
 
         <div class="style-hanging-wrap reveal" style="--d:.1s">
           <div class="hanging-row">
-            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" /></svg>
+            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.3)" stroke-width="2" /></svg>
             <div class="hang-item-wrap top-1" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal1" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal1)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--dark">
                 <div class="card-label">主风格</div><div class="word">日常高恋</div><div class="word">暧昧调情</div>
               </div>
             </div>
             <div class="hang-item-wrap top-2" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal2" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal2)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--dark">
                 <div class="card-label">主风格</div><div class="word">微文艺</div><div class="word">真诚直球</div>
               </div>
             </div>
             <div class="hang-item-wrap top-3" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal3" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal3)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--dark">
                 <div class="card-label">主风格</div><div class="word">微擦高擦</div><div class="word">动描</div>
               </div>
@@ -868,21 +899,30 @@
           </div>
 
           <div class="hanging-row">
-            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" /></svg>
+            <svg class="dark-rope" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M 0,10 Q 150,35 300,10" fill="transparent" stroke="rgba(255,255,255,0.3)" stroke-width="2" /></svg>
             <div class="hang-item-wrap bot-1" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal4" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal4)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--pink">
                 <div class="card-label">副风格</div><div class="word">热脸贱</div><div class="word">姐感</div>
               </div>
             </div>
             <div class="hang-item-wrap bot-2" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal5" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal5)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--pink">
                 <div class="card-label">副风格</div><div class="word">年上</div><div class="word">狗妹</div>
               </div>
             </div>
             <div class="hang-item-wrap bot-3" onclick="swing(this)">
-              <svg class="dark-clip" viewBox="0 0 24 40"><rect x="4" y="10" width="16" height="25" rx="2" fill="#444" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#666" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#333" /><path d="M 9 10 L 15 10 L 15 18 L 9 18 Z" fill="#999" opacity="0.4" /><rect x="2" y="18" width="20" height="2" fill="#222" /><circle cx="12" cy="19" r="3" fill="#111" /></svg>
+              <svg class="dark-clip" viewBox="0 0 24 40">
+                <defs><linearGradient id="metal6" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#666"/><stop offset="50%" stop-color="#999"/><stop offset="100%" stop-color="#444"/></linearGradient></defs>
+                <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal6)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
+              </svg>
               <div class="plain-card text-card--pink">
                 <div class="card-label">副风格</div><div class="word">狗姐</div><div class="word">恶趣</div>
               </div>
@@ -1074,7 +1114,6 @@
   var T_HIDE = reduceMotion ? 200 : 4400;
   var LABELS = ["第一页，来信", "第二页，风格索引", "第三页，下单须知", "第四页，尾声"];
 
-  // 首屏资源加载完毕后，让信封整体淡入，解决“挨个出现”的问题
   window.addEventListener('load', function() {
     var envWrap = document.querySelector('.env-wrap');
     if (envWrap) {
@@ -1084,7 +1123,6 @@
     }
   });
   
-  // 如果页面是在缓存中直接恢复的，防止 load 事件不触发
   if (document.readyState === 'complete') {
     setTimeout(function() {
       var envWrap = document.querySelector('.env-wrap');
@@ -1147,7 +1185,6 @@
     });
   }
 
-  /* 灰尘粒子引擎 */
   var canvas = document.getElementById("dust");
   var ctx = canvas ? canvas.getContext("2d") : null;
   var particles = [];
@@ -1396,7 +1433,7 @@
 
   document.addEventListener("touchstart", function (e) {
     if (!isOpen || e.touches.length !== 1) { touchTracking = false; return; }
-    if (e.target.closest("button, a, input, [role='button']") || e.target.closest(".page__scroll")) { 
+    if (e.target.closest("button, a, input, [role='button']")) { 
         touchTracking = false; 
         return; 
     }
@@ -1408,8 +1445,10 @@
   document.addEventListener("touchend", function (e) {
     if (!touchTracking) return;
     touchTracking = false;
+    
     var dx = e.changedTouches[0].clientX - touchStartX;
     var dy = e.changedTouches[0].clientY - touchStartY;
+    
     if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 30) return;
 
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
@@ -1421,7 +1460,6 @@
   document.addEventListener("mousedown", function (e) {
     if (!isOpen) return;
     if (e.target.closest("button, a, input, [role='button']")) return;
-    if (e.target.closest(".page__scroll")) { isDragging = false; return; }
     isDragging = true; startX = e.clientX;
   });
 
