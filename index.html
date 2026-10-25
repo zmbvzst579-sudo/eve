@@ -416,6 +416,9 @@
     overscroll-behavior: contain;
     background: transparent;
     padding-bottom: 20px;
+    
+    display: flex; 
+    flex-direction: column;
   }
   .page__scroll::-webkit-scrollbar { display: none; }
 
@@ -478,10 +481,11 @@
     100% { opacity: 1; }
   }
 
+  /* ====== 核心修复：页脚永远跟在内容下方 ====== */
   .page-foot {
     position: relative;
-    margin-top: auto;
-    padding: 40px var(--pad-x) var(--foot-bottom);
+    margin-top: 60px; /* 改用固定间距，彻底抛弃 auto，让它跟在内容最末尾 */
+    padding: 0 var(--pad-x) var(--foot-bottom);
     z-index: 4; display: flex; align-items: center; gap: 10px;
     font-family: var(--sans); font-size: 8px; letter-spacing: .28em;
     color: var(--ink-mute); text-transform: uppercase; pointer-events: none;
@@ -495,7 +499,6 @@
   ============================================================ */
   .page-profile { background: var(--void); }
   .page-profile .page__scroll { 
-    display: flex; flex-direction: column;
     padding: var(--top-pad) 0 0; 
   }
 
@@ -628,8 +631,6 @@
   ============================================================ */
   .page-style { background: var(--void); }
   .page-style .page__scroll {
-    display: flex; flex-direction: column;
-    z-index: 1; 
     padding: var(--top-pad) var(--pad-x) 0;
   }
   .page-style::before {
@@ -684,42 +685,36 @@
     filter: grayscale(.5) contrast(1.05) drop-shadow(0 4px 8px rgba(0,0,0,.5));
   }
 
-  /* ====== 彻底重构：抛弃绝对定位，采用流式 Flex 布局 ====== */
+  /* ====== 绝对安全的网格布局 ====== */
   .style-hanging-wrap {
-    position: relative;
-    width: 100%;
-    /* 绝对不要写死高度 */
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 30px; 
     margin: 20px 0 30px 0;
+    position: relative;
   }
 
   .hanging-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px;
     position: relative;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 4%;
+    align-items: start;
   }
 
-  /* 绳子现在绝对定位在这一排的背后 */
   .dark-rope {
     position: absolute;
-    top: -5px; left: -5%; width: 110%; height: 50px;
+    top: -10px; left: -5%; width: 110%; height: 50px;
     pointer-events: none;
     z-index: 0;
   }
 
-  /* 卡片包裹层：相对定位，不脱离文档流 */
   .hang-item-wrap {
-    position: relative;
+    position: relative; 
     display: flex; flex-direction: column; align-items: center;
     cursor: pointer;
-    transform-origin: top center;
-    transform: rotate(var(--angle));
-    /* 错落感用 margin-top 控制 */
-    margin-top: var(--mt, 0);
     z-index: 2;
+    transform-origin: top center;
     animation: miniBreeze 5s ease-in-out infinite alternate;
   }
   
@@ -727,27 +722,26 @@
     animation: miniSwing 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
   }
 
+  .top-1 { transform: rotate(-6deg) translateY(0); animation-delay: 0s; }
+  .top-2 { transform: rotate(3deg) translateY(15px); animation-delay: 1s; }
+  .top-3 { transform: rotate(8deg) translateY(5px); animation-delay: 2s; }
+  
+  .bot-1 { transform: rotate(-3deg) translateY(0); animation-delay: 0.5s; }
+  .bot-2 { transform: rotate(6deg) translateY(15px); animation-delay: 1.5s; }
+  .bot-3 { transform: rotate(-5deg) translateY(5px); animation-delay: 2.5s; }
+
   @keyframes miniBreeze {
-    0% { transform: rotate(var(--angle)); }
-    100% { transform: rotate(calc(var(--angle) + 1deg)); }
+    0% { filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+    100% { filter: drop-shadow(0 15px 25px rgba(0,0,0,0.8)); }
   }
   @keyframes miniSwing {
-    0% { transform: rotate(var(--angle)); }
-    20% { transform: rotate(calc(var(--angle) + 15deg)); }
-    40% { transform: rotate(calc(var(--angle) - 12deg)); }
-    60% { transform: rotate(calc(var(--angle) + 6deg)); }
-    80% { transform: rotate(calc(var(--angle) - 2deg)); }
-    100% { transform: rotate(var(--angle)); }
+    0% { transform: rotate(var(--angle, 0deg)); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-12deg); }
+    60% { transform: rotate(6deg); }
+    80% { transform: rotate(-2deg); }
+    100% { transform: rotate(0deg); }
   }
-
-  /* 设置错落角度和高度 */
-  .top-1 { --angle: -5deg; --mt: 0px; }
-  .top-2 { --angle: 2deg;  --mt: 25px; }
-  .top-3 { --angle: 6deg;  --mt: 5px; }
-
-  .bot-1 { --angle: -3deg; --mt: 0px; }
-  .bot-2 { --angle: 4deg;  --mt: 15px; }
-  .bot-3 { --angle: -4deg; --mt: 5px; }
 
   .dark-clip {
     width: 20px; height: 34px;
@@ -763,7 +757,7 @@
     pointer-events: none;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    width: 92px;
+    width: 100%;
     min-height: 115px;
     text-align: center;
   }
@@ -857,8 +851,6 @@
     background: linear-gradient(180deg, rgba(6,5,7,.42) 0%, rgba(6,5,7,.18) 40%, rgba(6,5,7,.68) 100%), radial-gradient(ellipse at 50% 10%, transparent 42%, rgba(0,0,0,.28) 100%);
   }
   .page-notice .page__scroll {
-    z-index: 1; 
-    display: flex; flex-direction: column;
     padding: var(--top-pad) var(--pad-x) 8px;
   }
 
@@ -979,8 +971,7 @@
   ============================================================ */
   .page-end { background: #090708; overflow: hidden; }
   .page-end .page__scroll {
-    display: flex; flex-direction: column;
-    z-index: 3; padding: var(--top-pad) var(--pad-x) 0;
+    padding: var(--top-pad) var(--pad-x) 0;
   }
   .end__bg {
     position: absolute; inset: -5%; z-index: 0;
@@ -1009,28 +1000,23 @@
     font-size: clamp(9.5px, 2.6vw, 11px); line-height: 1.75; letter-spacing: .01em; color: var(--ink-soft);
   }
 
-  /* ====== 彻底重构：抛弃绝对定位，采用流式 Flex 布局 ====== */
+  /* ====== 完美还原截图比例与重叠效果 ====== */
   .end-collage {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* 底部对齐，方便错落 */
-    padding: 20px 0;
-    margin: clamp(16px, 2.6vh, 24px) 0;
     position: relative;
-    /* 移除高度限制 */
+    width: 100%;
+    height: 350px; 
+    margin: clamp(16px, 2.6vh, 24px) 0 30px 0;
   }
   
   .end-photo {
-    position: relative; /* 回归文档流 */
+    position: absolute; 
     padding: 6px 6px 26px; 
     background: linear-gradient(160deg, #f0e8e4, #ddd2ce);
     box-shadow: 0 17px 33px rgba(0,0,0,.54), 0 0 0 1px rgba(255,250,248,.13) inset;
     transition: transform .7s var(--ease);
     cursor: pointer;
-    border: 1px solid rgba(0,0,0,0.1);
   }
   
-  /* 强制正方形，绝对不压扁 */
   .end-photo img { 
     width: 100%; 
     aspect-ratio: 1 / 1; 
@@ -1043,33 +1029,28 @@
     font-family: var(--serif); font-size: 9.5px; letter-spacing: .22em; text-indent: .22em; color: #3a2e31;
   }
   
-  /* 利用 margin 和 transform 做叠放错落，不再使用绝对定位 */
   .end-photo--main { 
-    width: 52%; 
-    transform: rotate(-7deg); 
-    z-index: 3;
+    width: 52%; left: 4%; top: 8%; 
+    transform: rotate(-6deg); 
+    z-index: 2;
   }
   .end-photo--main img { object-position: 50% 40%; }
   
   .end-photo--top { 
-    width: 36%; 
-    margin-left: -12%; /* 往左靠，叠在板评上 */
-    margin-bottom: 50px; /* 往上错落 */
-    transform: rotate(6deg); 
-    z-index: 2;
+    width: 36%; right: 4%; top: -4%;
+    transform: rotate(4deg); 
+    z-index: 1;
   }
   
   .end-photo--bottom { 
-    width: 40%; 
-    margin-left: -12%; /* 继续往左靠 */
-    margin-bottom: 10px;
-    transform: rotate(-2deg); 
-    z-index: 4;
+    width: 40%; right: 8%; bottom: 2%;
+    transform: rotate(-4deg); 
+    z-index: 3; 
   }
   
-  .end-collage:hover .end-photo--main { transform: rotate(-4.5deg) translateY(-3px); }
-  .end-collage:hover .end-photo--top { transform: rotate(3deg) translateY(-2px); }
-  .end-collage:hover .end-photo--bottom { transform: rotate(0deg) translateY(-2px); }
+  .end-collage:hover .end-photo--main { transform: rotate(-3deg) translateY(-3px); z-index: 10; }
+  .end-collage:hover .end-photo--top { transform: rotate(2deg) translateY(-3px); z-index: 10; }
+  .end-collage:hover .end-photo--bottom { transform: rotate(-1deg) translateY(-3px); z-index: 10; }
 
   .end-tape {
     position: absolute; z-index: 8;
@@ -1312,11 +1293,9 @@
     .confirmed-img { width: 100px; }
     .end-tape { width: 60px; left: -14px; top: -9px; }
     
-    .plain-card { width: 82px; min-height: 105px; padding: 10px 4px; }
+    .plain-card { min-height: 105px; padding: 10px 4px; }
     .card-label { font-size: 8px; margin-bottom: 6px; }
     .word { font-size: 10px; line-height: 1.6; }
-    
-    .dark-rope { height: 45px; }
   }
 
   @media (max-height: 760px) {
@@ -1328,6 +1307,7 @@
     .message-wrap { margin-top: clamp(20px, 4vh, 30px); }
     .chat-display { height: 120px; }
     .player { margin-top: 10px; }
+    .end-collage { height: 310px; margin-bottom: 20px; }
   }
 
   @media (max-height: 660px) {
@@ -1340,6 +1320,7 @@
     .message-wrap { margin-top: 20px; }
     .chat-display { height: 100px; }
     .player { margin-top: 8px; }
+    .end-collage { height: 270px; margin-bottom: 15px; }
   }
 
   @media (min-width: 610px) {
@@ -1368,8 +1349,8 @@
 <!-- ⚠️ 这里填入你刚刚拿到的 jsonbin 数据 -->
 <script>
   const CONFIG = {
-    BIN_ID: 'YOUR_BIN_ID', 
-    MASTER_KEY: '$2a$10$YOUR_MASTER_KEY',           
+    BIN_ID: '6adde254ffd5d160538a3354', 
+    MASTER_KEY: '$2a$10$4yL.sj7tmu7tNddTYctT0uoNbNOdkZYRHBPEJGDf5x2YzcZ/rPDsW',           
     ADMIN_PASSWORD: 'eve520'             
   };
 </script>
@@ -1490,6 +1471,7 @@
           <p class="profile-footer-cn">冬天周而复始，<br>该相逢的人会再相逢。</p>
         </div>
 
+        <!-- 页脚放在这里，跟在内容后面 -->
         <footer class="page-foot reveal" style="--d:.52s">
           <span>LETTER <b>01</b></span>
           <i aria-hidden="true"></i>
@@ -1512,7 +1494,6 @@
           <img class="stamp-mini" src="images/youpiao.webp" alt="" aria-hidden="true">
         </div>
 
-        <!-- 重构后的流式排版 -->
         <div class="style-hanging-wrap reveal" style="--d:.1s">
           
           <div class="hanging-row">
@@ -1640,6 +1621,7 @@
           <p>爱像春天一样缓慢。</p>
         </div>
 
+        <!-- 页脚放在这里 -->
         <footer class="page-foot reveal" style="--d:.44s">
           <span>LETTER <b>02</b></span>
           <i aria-hidden="true"></i>
@@ -1723,6 +1705,7 @@
           </div>
         </div>
 
+        <!-- 页脚放在这里，展开须知后会自动被推下去 -->
         <footer class="page-foot reveal" style="--d:.14s">
           <span>LETTER <b>03</b></span>
           <i aria-hidden="true"></i>
@@ -1741,7 +1724,6 @@
       <div class="page__scroll">
         <p class="end__fr reveal" style="--d:.12s">Continuez à chercher la résonance du bonheur.</p>
 
-        <!-- 重构后的流式排版，移除绝对定位 -->
         <div class="end-collage reveal" style="--d:.2s">
           <a href="https://www.kdocs.cn/l/chZcJl09zyxU" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
             <figure class="end-photo end-photo--main">
@@ -1861,7 +1843,8 @@
   var bgm = new Audio();
   bgm.loop = true;
   bgm.preload = 'auto';
-  bgm.src = 'https://music.163.com/song/media/outer/url?id=440239266.mp3';
+  // ⚠️ 已经彻底绑定本地路径
+  bgm.src = 'images/bgm.mp3';
 
   function setMusicUI(on){
     if (player) player.classList.toggle("is-playing", !!on);
@@ -2196,8 +2179,8 @@
         let messages = (data.record && data.record.messages) ? data.record.messages : [];
         messages.push(newData);
         
-        // 限制最多保存 200 条，防止超过 100KB 容量限制
-        if(messages.length > 200) messages = messages.slice(-200);
+        // ⚠️ 限制最多保存 100 条
+        if(messages.length > 100) messages = messages.slice(-100);
 
         return fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`, {
           method: 'PUT',
