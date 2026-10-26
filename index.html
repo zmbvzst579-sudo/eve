@@ -413,7 +413,6 @@
      PAGE 2 — 风格 (恢复清爽排版，加大底部留白)
   ============================================================ */
   .page-style { background: var(--void); }
-  /* 增加底部 padding，确保能滑到最底 */
   .page-style .page__scroll { padding: var(--top-pad) var(--pad-x) 50px; }
   
   .page-style-bg {
@@ -483,11 +482,7 @@
     width: 100%; min-height: 125px; text-align: center;
   }
   
-  /* 恢复清爽的文本标签，去掉了胶囊边框 */
-  .card-label { 
-    font-size: 9px; letter-spacing: 0.15em; 
-    margin-bottom: 8px; opacity: 0.8;
-  }
+  .card-label { font-size: 9px; letter-spacing: 0.15em; margin-bottom: 8px; opacity: 0.8; }
   .word { font-family: var(--serif); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; line-height: 1.8; margin-bottom: 6px; }
   .word:last-child { margin-bottom: 0; }
 
@@ -535,7 +530,6 @@
   .page-notice-bg.loaded { background: url("images/image6.webp") center / cover no-repeat; opacity: 1; }
   .page-notice::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(8,8,10,.3) 0%, rgba(8,8,10,.1) 40%, rgba(8,8,10,.5) 100%); }
   
-  /* 增加底部 padding，确保能滑到最底 */
   .page-notice .page__scroll { padding: var(--top-pad) var(--pad-x) 50px; }
 
   .notice-glass { position: relative; z-index: 2; padding: clamp(20px, 4.5vw, 26px) clamp(16px, 4vw, 22px); border-radius: 4px; border: 1px solid rgba(255, 255, 255, .2); background: rgba(28, 26, 30, 0.9); box-shadow: 0 15px 35px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .1); margin-bottom: 40px; }
@@ -884,7 +878,7 @@
                 <rect x="4" y="10" width="16" height="25" rx="2" fill="url(#metal2)" /><rect x="6" y="12" width="12" height="21" rx="1" fill="#333" /><path d="M 6 14 L 18 14 L 16 9 L 8 9 Z" fill="#222" /><rect x="2" y="18" width="20" height="2" fill="#111" />
               </svg>
               <div class="plain-card text-card--dark">
-                <div class="card-label">主风格</div><div class="word">微文艺</div><div class="word">真诚直球</div>
+                <div class="card-label">主风格</div><div class="word">白话</div><div class="word">真诚直球</div>
               </div>
             </div>
             <div class="hang-item-wrap top-3" onclick="swing(this)">
@@ -1036,7 +1030,7 @@
             <div class="chat-list" id="chatList"></div>
           </div>
           <div class="message-box" id="messageBox">
-            <input class="message-input" id="messageInput" type="text" maxlength="24" placeholder="对我说些什么吧？" aria-label="留言">
+            <input class="message-input" id="messageInput" type="text" maxlength="24" placeholder="" aria-label="留言">
             <button class="message-send" id="messageSend" type="button" aria-label="寄出">
               <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10H16M11 5L16 10L11 15"/></svg>
             </button>
@@ -1099,6 +1093,7 @@
   
   var isDustRunning = false; 
   var dustRafId = null;
+  var hasTypedPlaceholder = false; // 打字机效果标识
 
   var current = 0;
   var isOpen = false;
@@ -1289,6 +1284,26 @@
     statusText.textContent = LABELS[current] + "，共四页";
   }
 
+  // 打字机效果函数
+  function runTypewriter() {
+    if (hasSent) return; // 如果已发送，不用打字
+    var text = "对我说些什么吧？";
+    var i = 0;
+    messageInput.placeholder = ""; // 清空占位符
+    
+    // 延迟一下，等切页动画稍微稳定再开始打字，体验更好
+    setTimeout(function() {
+      var timer = setInterval(function() {
+        if (i < text.length) {
+          messageInput.placeholder += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 150); // 150毫秒一个字
+    }, 600); 
+  }
+
   function setPage(index, force) {
     index = clamp(index, 0, pages.length - 1);
     if (index === current && !force) return;
@@ -1318,6 +1333,12 @@
     var chars = page.querySelectorAll(".char:not(.is-played)");
     for (var i = 0; i < chars.length; i++) {
       chars[i].classList.add("is-played");
+    }
+
+    // 如果是第四页并且没触发过打字效果，就触发
+    if (current === 3 && !hasTypedPlaceholder) {
+      hasTypedPlaceholder = true;
+      runTypewriter();
     }
 
     if (current === 0 && isOpen) {
