@@ -410,7 +410,7 @@
   .profile-footer-cn { font-size: 11.5px; line-height: 1.95; color: var(--ink-soft); letter-spacing: .05em; }
 
   /* ============================================================
-     PAGE 2 — 风格 (恢复清爽排版，加大底部留白)
+     PAGE 2 — 风格
   ============================================================ */
   .page-style { background: var(--void); }
   .page-style .page__scroll { padding: var(--top-pad) var(--pad-x) 50px; }
@@ -519,7 +519,7 @@
   .style-footer p { font-size: 12px; line-height: 1.9; color: var(--ink-soft); letter-spacing: .04em; text-shadow: 0 1px 6px rgba(0,0,0,.55); }
 
   /* ============================================================
-     PAGE 3 — 下单须知 (加大底部留白)
+     PAGE 3 — 下单须知
   ============================================================ */
   .page-notice { background: #08080a; }
   
@@ -735,9 +735,17 @@
 <script>
   const CONFIG = {
     BIN_ID: '6adde254ffd5d160538a3354', 
-    MASTER_KEY: '$2a$10$4yL.sj7tmu7tNddTYctT0uoNbNOdkZYRHBPEJGDf5x2YzcZ/rPDsW',           
+    ACCESS_KEY: '$2a$10$yF8SIs.c77183nscCDF3BecieMxXE6jwyr2KSVVDAlhi07sV7WxQi',           
     ADMIN_PASSWORD: 'eve520'             
   };
+
+  document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+      e.preventDefault();
+      return false;
+    }
+  });
 </script>
 
 <div class="app" id="app">
@@ -1093,7 +1101,7 @@
   
   var isDustRunning = false; 
   var dustRafId = null;
-  var hasTypedPlaceholder = false; // 打字机效果标识
+  var hasTypedPlaceholder = false; 
 
   var current = 0;
   var isOpen = false;
@@ -1284,14 +1292,12 @@
     statusText.textContent = LABELS[current] + "，共四页";
   }
 
-  // 打字机效果函数
   function runTypewriter() {
-    if (hasSent) return; // 如果已发送，不用打字
+    if (hasSent) return; 
     var text = "对我说些什么吧？";
     var i = 0;
-    messageInput.placeholder = ""; // 清空占位符
+    messageInput.placeholder = ""; 
     
-    // 延迟一下，等切页动画稍微稳定再开始打字，体验更好
     setTimeout(function() {
       var timer = setInterval(function() {
         if (i < text.length) {
@@ -1300,7 +1306,7 @@
         } else {
           clearInterval(timer);
         }
-      }, 150); // 150毫秒一个字
+      }, 150); 
     }, 600); 
   }
 
@@ -1335,7 +1341,6 @@
       chars[i].classList.add("is-played");
     }
 
-    // 如果是第四页并且没触发过打字效果，就触发
     if (current === 3 && !hasTypedPlaceholder) {
       hasTypedPlaceholder = true;
       runTypewriter();
@@ -1536,6 +1541,18 @@
     });
   }
 
+  // =========================================================
+  // 防刷留言过滤函数
+  // =========================================================
+  function isValidMessage(msg) {
+    if (!msg || typeof msg.time !== 'number' || typeof msg.text !== 'string') return false;
+    // 过滤掉 2024 年之前 或 2030 年之后的数据
+    if (msg.time < 1704038400000 || msg.time > 1893456000000) return false;
+    // 过滤掉空白信息
+    if (msg.text.trim() === "") return false;
+    return true;
+  }
+
   function sendMessage() {
     if (hasSent || !messageInput || !messageSend) return;
     
@@ -1564,11 +1581,15 @@
       var newData = { text: val, time: Date.now() };
       
       fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`, {
-        headers: { 'X-Master-Key': CONFIG.MASTER_KEY }
+        headers: { 'X-Access-Key': CONFIG.ACCESS_KEY } // 改为 Access Key
       })
       .then(res => res.json())
       .then(data => {
         let messages = (data.record && data.record.messages) ? data.record.messages : [];
+        
+        // 保存前清理异常数据
+        messages = messages.filter(isValidMessage);
+        
         messages.push(newData);
         if(messages.length > 100) messages = messages.slice(-100);
 
@@ -1576,7 +1597,7 @@
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'X-Master-Key': CONFIG.MASTER_KEY
+            'X-Access-Key': CONFIG.ACCESS_KEY // 改为 Access Key
           },
           body: JSON.stringify({ messages: messages })
         });
@@ -1614,8 +1635,8 @@
   }
 
   function openAdminPanel() {
-    if (CONFIG.BIN_ID === 'YOUR_BIN_ID' || CONFIG.MASTER_KEY === 'YOUR_MASTER_KEY') {
-      alert('请在代码最下方的 CONFIG 中配置 BIN_ID 和 MASTER_KEY 以查看网络留言。');
+    if (CONFIG.BIN_ID === 'YOUR_BIN_ID' || CONFIG.ACCESS_KEY === 'YOUR_ACCESS_KEY') {
+      alert('请在代码最下方的 CONFIG 中配置 BIN_ID 和 ACCESS_KEY。');
       return;
     }
 
@@ -1623,11 +1644,15 @@
     adminPanel.classList.add("show");
 
     fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`, {
-      headers: { 'X-Master-Key': CONFIG.MASTER_KEY }
+      headers: { 'X-Access-Key': CONFIG.ACCESS_KEY } // 改为 Access Key
     })
     .then(res => res.json())
     .then(data => {
       let messages = (data.record && data.record.messages) ? data.record.messages : [];
+      
+      // 展示时清理异常数据
+      messages = messages.filter(isValidMessage);
+      
       adminList.innerHTML = '';
       
       if (messages.length === 0) {
