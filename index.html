@@ -553,6 +553,11 @@
   .accordion-text p { margin-bottom: 8px; padding-left: 12px; position: relative; }
   .accordion-text p::before { content: "·"; position: absolute; left: 0; color: var(--dusty-rose); opacity: 0.9; }
   .accordion-text p:last-child { margin-bottom: 0; }
+  .accordion-text p.notice-emphasis {
+    font-size: clamp(12px, 3.4vw, 13px);
+    color: rgba(240, 236, 234, .9);
+    letter-spacing: .04em;
+  }
 
   .confirmed-img { display: inline-block; vertical-align: middle; width: 130px; margin-left: 10px; opacity: 0; transform: translateX(-10px) scale(0.9); transition: opacity .8s var(--ease), transform .8s var(--ease-soft), filter .5s ease; mix-blend-mode: screen; filter: invert(1) sepia(0.2) hue-rotate(310deg) saturate(1.5); pointer-events: auto; cursor: pointer; }
   .accordion-item.is-open .confirmed-img { opacity: 0.9; transform: translate(25px, -5px) rotate(-8deg) scale(1); }
@@ -962,7 +967,7 @@
           <div class="accordion-item is-open">
             <button class="accordion-header" aria-expanded="true"><span>TERMS 01</span><span class="accordion-icon"></span></button>
             <div class="accordion-content"><div class="accordion-inner"><div class="accordion-text">
-              <p>不接受口头预约</p><p>预约后等待十分钟以上时间计入单内时间</p><p>预约三次未取非我问题默认送单</p><p>是个很无聊的人机 私下聊天可能会有些局促</p><p>请勿在单外传我 感谢</p><p>不接带审视目光来点单的同行或者同团</p>
+              <p>不接受口头预约</p><p>预约后等待十分钟以上时间计入单内时间</p><p>预约三次未取非我问题默认送单</p><p>是个很无聊的人机 私下聊天可能会有些局促</p><p>请勿在单外传我 感谢</p><p>不接带审视目光来点单的同行或者同团</p><p class="notice-emphasis">拒陌生板匿名指定</p>
             </div></div></div>
           </div>
           <div class="accordion-item">
